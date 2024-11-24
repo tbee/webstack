@@ -48,6 +48,12 @@ public class HsqlEmbedded {
         return this;
     }
 
+    public HsqlEmbedded portFromUrl(String url) {
+        String datasourceUrlSuffix = url.substring(url.lastIndexOf(":") + 1);
+        int port = Integer.parseInt(datasourceUrlSuffix.substring(0, datasourceUrlSuffix.indexOf("/")));
+        return port(port);
+    }
+
     public HsqlEmbedded database(String v, String... vs) {
         this.databases.add(v);
         this.databases.addAll(Arrays.asList(vs));
@@ -57,6 +63,12 @@ public class HsqlEmbedded {
     public HsqlEmbedded database(List<String> v) {
         this.databases.addAll(v);
         return this;
+    }
+
+    public HsqlEmbedded databaseFromUrl(String url) {
+        String datasourceUrlSuffix = url.substring(url.lastIndexOf(":") + 1);
+        String dbname = datasourceUrlSuffix.substring(datasourceUrlSuffix.indexOf("/") + 1);
+        return database(dbname);
     }
 
     public HsqlEmbedded username(String v) {
