@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.tbee</groupId>
 	<artifactId>webstack</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>webstack</name>
 	<description>Generic classes to support the Spring/Vaadin/Hsql stack</description>
 	<url>https://github.com/tbee/webstack</url>

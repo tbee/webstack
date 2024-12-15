@@ -49,6 +49,10 @@ public class HsqlEmbedded {
     }
 
     public HsqlEmbedded portFromUrl(String url) {
+        if (!url.contains(":hsql:")) {
+            port(0);
+            return this;
+        }
         String datasourceUrlSuffix = url.substring(url.lastIndexOf(":") + 1);
         int port = Integer.parseInt(datasourceUrlSuffix.substring(0, datasourceUrlSuffix.indexOf("/")));
         return port(port);
@@ -87,7 +91,7 @@ public class HsqlEmbedded {
     }
 
     public HsqlEmbedded start() {
-        assertNotNull(port, "url");
+        assertNotNull(port, "port");
         assertNotEmpty(databases, "databases");
         assertNotNull(username, "username");
         assertNotNull(password, "password");
