@@ -44,6 +44,7 @@ public class HsqlEmbedded {
     private List<String> allowConnectionsFrom = new ArrayList<>(List.of("localhost"));
 
     private org.hsqldb.Server server;
+    private final Thread shutdownHook = new Thread(() -> stop());
 
     public HsqlEmbedded port(int v) {
         this.port = v;
@@ -128,7 +129,7 @@ public class HsqlEmbedded {
         LOG.log(INFO, "HSQL started");
 
         // Handle clean shutdown
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> stop()));
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
 
         return this;
     }
@@ -146,6 +147,9 @@ public class HsqlEmbedded {
         LOG.log(INFO, "HSQL shutting down");
         server.shutdown();
         LOG.log(INFO, "HSQL has shutdown");
+
+        // Shutdown complete
+        Runtime.getRuntime().removeShutdownHook(shutdownHook);
 
         return this;
     }
