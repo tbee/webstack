@@ -2,8 +2,6 @@ package org.tbee.webstack.hsqldb;
 
 import org.apache.commons.io.IOUtils;
 import org.hsqldb.persist.HsqlProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import static java.lang.System.Logger.Level.ERROR;
+import static java.lang.System.Logger.Level.INFO;
+import static java.lang.System.Logger.Level.WARNING;
 
 /// Start an embedded HSQLDB.
 ///
@@ -32,8 +34,8 @@ import java.util.stream.Collectors;
 /// This takes care of a.o. of access control (default: localhost only), automatic clean shutdown upon JVM exit.
 ///
 public class HsqlEmbedded {
+    private static final System.Logger LOG = System.getLogger(HsqlEmbedded.class.getName());
 
-    private static final Logger LOG = LoggerFactory.getLogger(HsqlEmbedded.class);
     private Integer port;
     private List<String> databases = new ArrayList<>();
     private String username;
@@ -102,14 +104,14 @@ public class HsqlEmbedded {
         hsqlProperties.setProperty("server.port", port);
         hsqlProperties.setProperty("server.acl", createHsqldbAclFile());
         hsqlProperties.setProperty("hsqldb.tx", "mvcc"); // multi version concurrency control (transactions see a consistent view of the data)
-        if (LOG.isInfoEnabled()) LOG.info("Starting HSQL on port: " + port);
+        LOG.log(INFO, "Starting HSQL on port: {0}", port);
 
         // If the dbname is <tenantId> then we will start tenants, otherwise just the one database
         for (int i = 0; i < databases.size(); i++) {
             String database = databases.get(i);
             hsqlProperties.setProperty("server.database." + i, "file:hsqldb/" + database + ";user=" + username + ";password=" + password);
             hsqlProperties.setProperty("server.dbname." + i, database);
-            if (LOG.isInfoEnabled()) LOG.info("Starting HSQL database: " + database);
+            LOG.log(INFO, "Starting HSQL database: {0}", database);
         }
 
         // Setup the server and start
@@ -117,13 +119,13 @@ public class HsqlEmbedded {
         try {
             server.setProperties(hsqlProperties);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(ERROR, e);
             return this;
         }
-        server.setLogWriter(new PrintWriter(new ToLogger(LOG::info)));
-        server.setErrWriter(new PrintWriter(new ToLogger(LOG::error)));
+        server.setLogWriter(new PrintWriter(new ToLogger(s -> LOG.log(INFO, s))));
+        server.setErrWriter(new PrintWriter(new ToLogger(s -> LOG.log(ERROR, s))));
         server.start();
-        if (LOG.isInfoEnabled()) LOG.info("HSQL started");
+        LOG.log(INFO, "HSQL started");
 
         // Handle clean shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(() -> stop()));
@@ -133,17 +135,17 @@ public class HsqlEmbedded {
 
     public HsqlEmbedded stop() {
         if (server == null) {
-            LOG.warn("HSQL server is not started");
+            LOG.log(INFO, "HSQL server is not started");
             return this;
         }
         if (server.isNotRunning()) {
-            LOG.warn("HSQL server is not running");
+            LOG.log(WARNING, "HSQL server is not running");
             return this;
         }
 
-        if (LOG.isInfoEnabled()) LOG.info("HSQL shutting down");
+        LOG.log(INFO, "HSQL shutting down");
         server.shutdown();
-        if (LOG.isInfoEnabled()) LOG.info("HSQL has shutdown");
+        LOG.log(INFO, "HSQL has shutdown");
 
         return this;
     }
@@ -176,7 +178,7 @@ public class HsqlEmbedded {
             try (FileOutputStream fileOutputStream = new FileOutputStream(aclFile)) {
                 IOUtils.write(acl, fileOutputStream, Charset.defaultCharset());
             }
-            if (LOG.isInfoEnabled()) LOG.info("HSQLDB using ACL in: " + aclFile.getAbsolutePath());
+            LOG.log(INFO, "HSQLDB using ACL in: {0}", aclFile.getAbsolutePath());
             return aclFile.getAbsolutePath();
         } catch (IOException e) {
             throw new RuntimeException(e);
