@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.tbee</groupId>
 	<artifactId>webstack</artifactId>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 	<name>webstack</name>
 	<description>Generic classes to support the Spring/Vaadin/Hsql stack</description>
 	<url>https://github.com/tbee/webstack</url>
@@ -30,7 +30,7 @@
 	</developers>
 
 	<properties>
-		<java.version>21</java.version>
+		<java.version>23</java.version>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
