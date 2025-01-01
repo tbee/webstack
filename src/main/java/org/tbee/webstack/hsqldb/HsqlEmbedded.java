@@ -149,7 +149,12 @@ public class HsqlEmbedded {
         LOG.log(INFO, "HSQL has shutdown");
 
         // Shutdown complete
-        Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        try {
+            Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        }
+        catch (IllegalStateException e) {
+            // ignore, because this is expected when the JVM is shutting down
+        }
 
         return this;
     }
