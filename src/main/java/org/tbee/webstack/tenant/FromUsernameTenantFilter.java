@@ -15,12 +15,12 @@ import java.io.IOException;
 
 /// This is the filter that extracts the tenant information from the request,
 /// and then lets the remaining request run with that information.
-public class TenantFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(TenantFilter.class);
+public abstract class FromUsernameTenantFilter implements Filter {
+    private static final Logger LOG = LoggerFactory.getLogger(FromUsernameTenantFilter.class);
 
     private final FromUsernameTenantService tenantService;
 
-    public TenantFilter(FromUsernameTenantService tenantService) {
+    public FromUsernameTenantFilter(FromUsernameTenantService tenantService) {
         this.tenantService = tenantService;
     }
 
@@ -31,7 +31,7 @@ public class TenantFilter implements Filter {
 
         String tenantId = tenantService.extractTenantId(httpServletRequest);
         String username = tenantService.extractUsername(httpServletRequest);
-        if (tenantId.isBlank()) {
+        if (tenantId == null || tenantId.isBlank()) {
             httpServletResponse.sendError(HttpStatus.BAD_GATEWAY.value(), "Unknown tenant");
             return;
         }

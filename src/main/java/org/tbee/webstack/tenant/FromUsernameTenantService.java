@@ -12,8 +12,7 @@ import java.util.List;
 /// This service contains all code that is needed for multi tenancy.
 /// Like extracting tenant id from the request, running a thread under specific tenant.
 /// In the example this usually is put into the filter or the context, but making it a separate service makes it injectable/usable in many places.
-@Service
-public class FromUsernameTenantService extends TenantService {
+public abstract class FromUsernameTenantService extends TenantService {
     private static final Logger LOG = LoggerFactory.getLogger(FromUsernameTenantService.class);
 
     public String extractTenantId(HttpServletRequest httpServletRequest) {
