@@ -42,6 +42,8 @@ public class HsqlEmbeddedServer {
     private List<String> databases = new ArrayList<>();
     private String username;
     private String password;
+    private boolean shutdownOnLastConnectionClose = false;
+
     // Per default only allow connections from localhost
     private List<String> allowConnectionsFrom = new ArrayList<>(List.of("localhost"));
 
@@ -121,6 +123,15 @@ public class HsqlEmbeddedServer {
         return allowConnectionsFrom;
     }
 
+    public HsqlEmbeddedServer shutdownOnLastConnectionClose(boolean v) {
+        this.shutdownOnLastConnectionClose = v;
+        return this;
+    }
+    public boolean shutdownOnLastConnectionClose() {
+        return shutdownOnLastConnectionClose;
+    }
+
+
     public HsqlEmbeddedServer start() {
         assertNotNull(port, "port");
         assertNotEmpty(databases, "databases");
@@ -138,7 +149,7 @@ public class HsqlEmbeddedServer {
         // If the dbname is <tenantId> then we will start tenants, otherwise just the one database
         for (int i = 0; i < databases.size(); i++) {
             String database = databases.get(i);
-            hsqlProperties.setProperty("server.database." + i, "file:" + folder + "/" + database + ";user=" + username + ";password=" + password + ";shutdown=true");
+            hsqlProperties.setProperty("server.database." + i, "file:" + folder + "/" + database + ";user=" + username + ";password=" + password + (shutdownOnLastConnectionClose ? ";shutdown=true" : ""));
             hsqlProperties.setProperty("server.dbname." + i, database);
             LOG.log(INFO, "Starting HSQL database {0} as {1}", database, username);
         }
