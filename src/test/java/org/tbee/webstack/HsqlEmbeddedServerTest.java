@@ -38,6 +38,7 @@ public class HsqlEmbeddedServerTest {
                 .username("username")
                 .password("password")
                 .database(this.getClass().getSimpleName())
+                .shutdownOnLastConnectionClose(true)
                 .start();
 
         // AND used
