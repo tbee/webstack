@@ -486,4 +486,8 @@ public class Table extends HtmlComponent implements TableRowContainer {
     }
 
 
+    public Table classNames(String... classNames) {
+        addClassNames(classNames);
+        return this;
+    }
 }

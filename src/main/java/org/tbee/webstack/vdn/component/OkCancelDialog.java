@@ -7,10 +7,13 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 
+import java.util.function.Supplier;
+
 public class OkCancelDialog extends Dialog {
 
     Button okButton = new Button("Ok");
     private Runnable onOk = null;
+    private Supplier<Boolean> validate = () -> true;
 
     public OkCancelDialog(String title) {
         this(title, null);
@@ -36,10 +39,18 @@ public class OkCancelDialog extends Dialog {
     }
 
     private void ok() {
+        if (!validate.get()) {
+            return;
+        }
         if (onOk != null) {
             onOk.run();
         }
         close();
+    }
+
+    public OkCancelDialog validate(Supplier<Boolean> v) {
+        this.validate = v;
+        return this;
     }
 
     public OkCancelDialog onOk(Runnable v) {
