@@ -27,4 +27,9 @@ import com.vaadin.flow.component.Tag;
  */
 @Tag("thead")
 public class TableHead extends Component implements TableRowContainer {
+
+    public TableHead classNames(String... classNames) {
+        addClassNames(classNames);
+        return this;
+    }
 }
