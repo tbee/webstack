@@ -9,9 +9,9 @@ import com.vaadin.flow.component.html.Span;
 /// ```java
 /// new FASAnchorIcon(href, "fas", "fa-map-pin")
 /// ```
-public class FASAnchorIcon extends Anchor {
+public class FasAnchorIcon extends Anchor {
 
-    public FASAnchorIcon(String href, String... classNames) {
+    public FasAnchorIcon(String href, String... classNames) {
         Span spanIcon = new Span();
         for (String className : classNames) {
             spanIcon.addClassName(className);
@@ -25,12 +25,12 @@ public class FASAnchorIcon extends Anchor {
         setTarget("_blank");
     }
 
-    public FASAnchorIcon href(String v) {
+    public FasAnchorIcon href(String v) {
         setHref(v);
         return this;
     }
 
-    public FASAnchorIcon target(String v) {
+    public FasAnchorIcon target(String v) {
         setTarget(v);
         return this;
     }
