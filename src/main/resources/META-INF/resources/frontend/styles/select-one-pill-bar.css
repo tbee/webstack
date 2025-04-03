@@ -1,0 +1,26 @@
+button {
+	padding: .5em 1em;
+	background: #F3F5F7;
+	color: #4A5568;
+	transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
+	transform: translateY(0);
+	border: 1px solid #E8EBEF;
+}
+button:first-of-type {
+	border-radius: .5em 0 0 .5em;
+}
+button:last-of-type {
+	border-radius: 0 .5em .5em 0;
+}
+
+.select-one-pill-bar button.selected {
+	border: 1px solid #202020;
+}
+
+button.selected + button.selected {
+	border-left: 0;
+}
+
+.select-one-pill-bar button:hover {
+	background: #DDE1E7;
+}
