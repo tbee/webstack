@@ -1,4 +1,4 @@
-button {
+.select-one-pill-bar button {
 	padding: .5em 1em;
 	background: #F3F5F7;
 	color: #4A5568;
@@ -6,10 +6,10 @@ button {
 	transform: translateY(0);
 	border: 1px solid #E8EBEF;
 }
-button:first-of-type {
+.select-one-pill-bar button:first-of-type {
 	border-radius: .5em 0 0 .5em;
 }
-button:last-of-type {
+.select-one-pill-bar button:last-of-type {
 	border-radius: 0 .5em .5em 0;
 }
 
@@ -17,7 +17,7 @@ button:last-of-type {
 	border: 1px solid #202020;
 }
 
-button.selected + button.selected {
+.select-one-pill-bar button.selected + button.selected {
 	border-left: 0;
 }
 
