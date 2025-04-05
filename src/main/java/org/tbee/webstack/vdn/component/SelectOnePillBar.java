@@ -2,6 +2,7 @@ package org.tbee.webstack.vdn.component;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -10,8 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// https://vaadin.com/forum/t/proper-way-to-include-css-for-a-custom-component-class-in-vaadin-14/159725
 // https://vaadin.com/docs/latest/flow/advanced/loading-resources
-@CssImport("./styles/select-one-pill-bar.css")
+@StyleSheet("context://org/tbee/webstack/vdn/component/select-one-pill-bar.css")
 public class SelectOnePillBar<T> extends HorizontalLayout {
     private final Map<NativeButton, T> buttonToKey = new HashMap<>();
     private final Map<T, NativeButton> keyToButton = new HashMap<>();
