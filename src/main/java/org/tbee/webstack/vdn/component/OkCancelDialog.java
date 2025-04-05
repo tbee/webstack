@@ -12,8 +12,7 @@ import java.util.function.Supplier;
 public class OkCancelDialog extends Dialog {
 
     Button okButton = new Button("Ok");
-    private Runnable onOk = null;
-    private Supplier<Boolean> validate = () -> true;
+    private Supplier<Boolean> onOk = null;
 
     public OkCancelDialog(String title) {
         this(title, null);
@@ -39,23 +38,29 @@ public class OkCancelDialog extends Dialog {
     }
 
     private void ok() {
-        if (!validate.get()) {
-            return;
-        }
         if (onOk != null) {
-            onOk.run();
+            if (!onOk.get()) {
+                return;
+            }
         }
         close();
     }
 
-    public OkCancelDialog validate(Supplier<Boolean> v) {
-        this.validate = v;
+    /// When the supplier returns true, the dialog is closed, on false it is not.
+    /// This allows for a validation when ok is pressed, and possible errors to prevent the dialog to be closed.
+    public OkCancelDialog onOk(Supplier<Boolean> v) {
+        this.onOk = v;
         return this;
     }
 
     public OkCancelDialog onOk(Runnable v) {
-        this.onOk = v;
-        return this;
+        return onOk(new Supplier<Boolean>() {
+            @Override
+            public Boolean get() {
+                v.run();
+                return true;
+            }
+        });
     }
 
     public OkCancelDialog okLabel(String v) {
