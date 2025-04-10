@@ -1,10 +1,13 @@
 package org.tbee.webstack.vdn.component.googlematerial;
 
 import com.vaadin.flow.component.html.Span;
+import org.tbee.webstack.vdn.component.StyleMixin;
+import org.tbee.webstack.vdn.component.fontawesome.FasIcon;
 
 // https://fonts.google.com/icons
 // https://developers.google.com/fonts/docs/material_icons
-public class GmfIcon extends Span {
+public class GmfIcon extends Span
+implements StyleMixin<FasIcon> {
 
     public GmfIcon(String iconname) {
         addClassNames("material-icons");
