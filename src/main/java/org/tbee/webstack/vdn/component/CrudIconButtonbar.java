@@ -1,5 +1,6 @@
 package org.tbee.webstack.vdn.component;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 
@@ -50,6 +51,11 @@ public class CrudIconButtonbar extends HorizontalLayout {
     public CrudIconButtonbar onDelete(Runnable v) {
         this.onDelete = v;
         setState();
+        return this;
+    }
+
+    public CrudIconButtonbar padding(boolean b) {
+        setPadding(b);
         return this;
     }
 }

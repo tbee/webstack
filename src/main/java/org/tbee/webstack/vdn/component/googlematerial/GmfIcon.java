@@ -7,7 +7,7 @@ import org.tbee.webstack.vdn.component.fontawesome.FasIcon;
 // https://fonts.google.com/icons
 // https://developers.google.com/fonts/docs/material_icons
 public class GmfIcon extends Span
-implements StyleMixin<FasIcon> {
+implements StyleMixin<GmfIcon> {
 
     public GmfIcon(String iconname) {
         addClassNames("material-icons");

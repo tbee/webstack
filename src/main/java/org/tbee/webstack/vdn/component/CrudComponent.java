@@ -4,6 +4,11 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.provider.DataKeyMapper;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.data.renderer.Rendering;
+import com.vaadin.flow.dom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tbee.webstack.vdn.form.AbstractCrudFormLayout;
@@ -36,14 +41,17 @@ public class CrudComponent<E> extends VerticalLayout {
 		// not needed: treeGrid.setHeightFull();
 		treeGrid.setMultiSort(true); // SHIFT click adds columns
 		treeGrid.addItemDoubleClickListener(e -> edit());
+		treeGrid.addColumn(new ComponentRenderer<>(e -> new CrudIconButtonbar()
+				.onEdit(CrudComponent.this::edit)
+				.onDelete(CrudComponent.this::delete)
+				.padding(false)
+		)).setFlexGrow(0).setWidth("80px");
 		setupTreeGrid.accept(treeGrid); // do the default setup first, so it may be overridden here
 
 		// crudButtonbar
 		CrudButtonbar crudButtonbar = new CrudButtonbar()
 				.onReload(this::reloadGrid)
-				.onInsert(this::insert)
-				.onEdit(this::edit)
-				.onDelete(this::delete);
+				.onInsert(this::insert);
 
 		// content
 		add(crudButtonbar, treeGrid);

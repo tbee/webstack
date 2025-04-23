@@ -54,4 +54,9 @@ public class CrudButtonbar extends HorizontalLayout {
         setState();
         return this;
     }
+
+    public CrudButtonbar padding(boolean b) {
+        setPadding(b);
+        return this;
+    }
 }
