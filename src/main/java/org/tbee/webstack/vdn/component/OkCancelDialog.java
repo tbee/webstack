@@ -72,4 +72,9 @@ public class OkCancelDialog extends Dialog {
         this.setWidth(width, unit);
         return this;
     }
+
+    public OkCancelDialog height(float height, Unit unit) {
+        this.setHeight(height, unit);
+        return this;
+    }
 }
