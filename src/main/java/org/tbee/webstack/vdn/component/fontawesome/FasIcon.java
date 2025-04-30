@@ -1,22 +1,23 @@
 package org.tbee.webstack.vdn.component.fontawesome;
 
-import com.vaadin.flow.component.html.Span;
-import org.tbee.webstack.vdn.component.StyleMixin;
-import org.tbee.webstack.vdn.component.googlematerial.GmfIcon;
+import org.tbee.webstack.vdn.component.ExternalIcon;
 
-public class FasIcon extends Span
-implements StyleMixin<FasIcon> {
-    public FasIcon(String... classNames) {
-        addClassNames(classNames);
+import java.util.ArrayList;
+import java.util.List;
+
+/// You have to include a personal license link in the application.
+/// ```
+/// @JavaScript("https://kit.fontawesome.com/....js")
+/// ```
+/// https://fontawesome.com
+public class FasIcon extends ExternalIcon<FasIcon> {
+
+    // https://fontawesome.com/search?o=r&s=solid&ip=classic
+    public FasIcon(String iconName) {
+        this("fa-solid", iconName);
     }
 
-    public FasIcon color(String v) {
-        getStyle().set("color", v);
-        return this;
-    }
-
-    public FasIcon size(String v) {
-        getStyle().set("font-size", v);
-        return this;
+    public FasIcon(String familyName, String iconName) {
+        addClassNames(familyName, iconName);
     }
 }
