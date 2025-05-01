@@ -1,10 +1,18 @@
+.select-one-pill-bar {
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
+	align-content: flex-start;
+	align-items: stretch;
+	gap: 0;
+}
+
 .select-one-pill-bar button {
-	padding: .5em 1em;
 	background: #F3F5F7;
 	color: #4A5568;
 	transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
-	transform: translateY(0);
 	border: 1px solid #E8EBEF;
+	height: 100%;
 }
 .select-one-pill-bar button:first-of-type {
 	border-radius: .5em 0 0 .5em;
