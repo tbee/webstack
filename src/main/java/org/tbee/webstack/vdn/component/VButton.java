@@ -34,13 +34,13 @@ public class VButton extends Button {
         super(text, icon, clickListener);
     }
 
-    public VButton withIsPrimary(boolean isPrimary) {
+    public VButton isPrimary(boolean isPrimary) {
         if (isPrimary) {
             addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         }
         return this;
     }
-    public VButton withIsPrimary() {
-        return withIsPrimary(true);
+    public VButton isPrimary() {
+        return isPrimary(true);
     }
 }
