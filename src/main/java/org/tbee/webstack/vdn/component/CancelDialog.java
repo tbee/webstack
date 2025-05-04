@@ -6,7 +6,8 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 
-public class CancelDialog extends Dialog {
+public class CancelDialog extends Dialog
+implements ComponentMixin<CancelDialog> {
 
     public CancelDialog(String title) {
         this(title, null);

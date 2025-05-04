@@ -7,4 +7,9 @@ public interface StyleMixin<C extends HasStyle> {
         ((C)this).getStyle().set(key, value);
         return (C)this;
     }
+
+    default C classNames(String... names) {
+        ((C)this).addClassNames(names);
+        return (C)this;
+    }
 }

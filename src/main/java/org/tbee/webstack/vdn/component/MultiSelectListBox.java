@@ -25,6 +25,7 @@ public class MultiSelectListBox<T> extends com.vaadin.flow.component.listbox.Mul
     public MultiSelectListBox<T> refresh() {
         try {
             ignoreSelectionEvents++;
+// TBEERNOT: use setSelectionPreservationMode();!!!
 
             Set<T> selection = selection();
             getDataProvider().refreshAll(); // this clears the selection

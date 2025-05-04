@@ -9,7 +9,8 @@ import com.vaadin.flow.theme.lumo.LumoIcon;
 
 import java.util.function.Supplier;
 
-public class OkCancelDialog extends Dialog {
+public class OkCancelDialog extends Dialog
+implements ComponentMixin<OkCancelDialog> {
 
     Button okButton = new Button("Ok");
     private Supplier<Boolean> onOk = null;
