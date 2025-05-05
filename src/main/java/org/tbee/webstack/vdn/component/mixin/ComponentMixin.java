@@ -1,7 +1,6 @@
-package org.tbee.webstack.vdn.component;
+package org.tbee.webstack.vdn.component.mixin;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasStyle;
 
 public interface ComponentMixin<C extends Component> {
     default C id(String id) {

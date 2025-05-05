@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.theme.lumo.LumoIcon;
+import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
 
 public class CancelDialog extends Dialog
 implements ComponentMixin<CancelDialog> {

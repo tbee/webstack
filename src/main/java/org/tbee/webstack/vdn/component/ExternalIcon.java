@@ -1,7 +1,7 @@
 package org.tbee.webstack.vdn.component;
 
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Span;
+import org.tbee.webstack.vdn.component.mixin.StyleMixin;
 
 abstract public class ExternalIcon<T extends ExternalIcon<?>> extends Span implements StyleMixin<T> {
 
