@@ -4,8 +4,11 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
+import org.tbee.webstack.vdn.component.mixin.StyleMixin;
 
-public class IconButton extends HorizontalLayout {
+public class IconButton extends HorizontalLayout
+implements ComponentMixin<IconButton>, StyleMixin<IconButton> {
 
     public IconButton(Icon icon, ComponentEventListener<ClickEvent<Icon>> clickListener) {
         icon.addClickListener(clickListener);
