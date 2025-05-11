@@ -18,6 +18,9 @@ package org.tbee.webstack.vdn.tag.table;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Tag;
+import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
+import org.tbee.webstack.vdn.component.mixin.SizeMixin;
+import org.tbee.webstack.vdn.component.mixin.StyleMixin;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -52,7 +55,7 @@ import java.util.stream.Stream;
  * @see TableFoot
  */
 @Tag("table")
-public class Table extends HtmlComponent implements TableRowContainer {
+public class Table extends HtmlComponent implements TableRowContainer, ComponentMixin<Table>, SizeMixin<Table>, StyleMixin<Table> {
 
     private TableCaption caption;
 

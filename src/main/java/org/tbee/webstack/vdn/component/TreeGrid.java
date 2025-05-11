@@ -8,6 +8,7 @@ import com.vaadin.flow.component.treegrid.TreeGridArrayUpdater;
 import com.vaadin.flow.data.provider.hierarchy.HierarchicalDataProvider;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
+import org.tbee.webstack.vdn.component.mixin.SizeMixin;
 
 import java.util.Collection;
 import java.util.Set;
@@ -15,7 +16,8 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public class TreeGrid<T> extends com.vaadin.flow.component.treegrid.TreeGrid<T> {
+public class TreeGrid<T> extends com.vaadin.flow.component.treegrid.TreeGrid<T>
+implements SizeMixin<TreeGrid<T>> {
 
     private GridContextMenu<T> gridContextMenu = null;
     public record Cell<T>(T row, Column<T> column) { }
