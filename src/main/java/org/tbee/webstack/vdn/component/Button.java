@@ -3,6 +3,7 @@ package org.tbee.webstack.vdn.component;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.ButtonVariant;
 import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
 import org.tbee.webstack.vdn.component.mixin.TextMixin;
 
@@ -40,6 +41,13 @@ implements ComponentMixin<Button>, TextMixin<Button> {
 
     public Button onClick(Consumer<ClickEvent<com.vaadin.flow.component.button.Button>> listener) {
         addClickListener(listener::accept);
+        return this;
+    }
+
+    public Button isPrimary(boolean isPrimary) {
+        if (isPrimary) {
+            addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        }
         return this;
     }
 }
