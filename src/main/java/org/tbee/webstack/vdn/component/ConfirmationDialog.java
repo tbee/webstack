@@ -1,6 +1,7 @@
 package org.tbee.webstack.vdn.component;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
@@ -43,8 +44,11 @@ implements ComponentMixin<ConfirmationDialog>, SizeMixin<ConfirmationDialog> {
 
         // Add buttons
         confirmButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        confirmButton.addClickShortcut(Key.ENTER);
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        cancelButton.addClickShortcut(Key.ESCAPE);
         rejectButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        rejectButton.addClickShortcut(Key.PAUSE);
         footer(rejectButton, cancelButton, confirmButton);
 
         closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
