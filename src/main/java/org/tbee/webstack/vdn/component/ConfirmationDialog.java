@@ -197,7 +197,7 @@ implements ComponentMixin<ConfirmationDialog>, SizeMixin<ConfirmationDialog> {
     }
     public ConfirmationDialog onReject(Function<ConfirmationDialog, Boolean> v) {
         rejectButtonDefaultBehavior.remove();
-        confirmButton
+        rejectButton
                 .onClick(event -> {
                     if (v.apply(this)) {
                         close();
