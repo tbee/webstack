@@ -56,7 +56,7 @@ public class ImageUpload extends HorizontalLayout {
 		upload.addSucceededListener(event -> {
 			String mimeType = URLConnection.guessContentTypeFromName(event.getFileName());
 			try (
-					InputStream inputStream = inputStream();
+				InputStream inputStream = inputStream();
 			) {
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				inputStream.transferTo(outputStream);
@@ -96,6 +96,9 @@ public class ImageUpload extends HorizontalLayout {
 
 	public String filename() {
 		return buffer.getFileName();
+	}
+	public String mimeType() {
+		return URLConnection.guessContentTypeFromName(buffer.getFileName());
 	}
 
 	/// @return inputstream, caller needs to close this.

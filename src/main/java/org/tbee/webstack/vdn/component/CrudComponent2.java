@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +54,9 @@ public class CrudComponent2<E, F extends Component> extends VerticalLayout {
 	private void insert() {
 		E entity = entitySupplier.get();
 		F form = formSupplier.apply(entity);
-		new OkCancelDialog(title, form)
-				.okLabel("Save")
-				.onOk(() -> {
+		ConfirmationDialog.confirmCancel(title, form)
+				.confirmText("Save")
+				.onConfirm(() -> {
 					saver.accept(entity, form);
 					reloadGrid();
 				})
@@ -70,9 +71,9 @@ public class CrudComponent2<E, F extends Component> extends VerticalLayout {
 
 		// Dialog
 		F form = formSupplier.apply(item);
-		new OkCancelDialog(title, form)
-				.okLabel("Save")
-				.onOk(() -> {
+		ConfirmationDialog.confirmCancel(title, form)
+				.confirmText("Save")
+				.onConfirm(() -> {
 					saver.accept(item, form);
 					reloadGrid();
 				})
@@ -85,9 +86,9 @@ public class CrudComponent2<E, F extends Component> extends VerticalLayout {
 			return;
 		}
 
-		new OkCancelDialog("Remove", new NativeLabel("Are you sure?"))
-				.okLabel("Yes")
-				.onOk(() -> {
+		ConfirmationDialog.confirmCancel("Remove", new NativeLabel("Are you sure?"))
+				.confirmText("Yes")
+				.onConfirm(() -> {
 					deleter.accept(item);
 					reloadGrid();
 				})
@@ -123,6 +124,17 @@ public class CrudComponent2<E, F extends Component> extends VerticalLayout {
 		this.saver = saver;
 		return this;
 	}
+	public CrudComponent2<E,F> saveVE(BiConsumerValidateException<E, F> saver) {
+		this.saver = (e, f) -> {
+			try {
+				saver.accept(e, f);
+			}
+			catch (ValidationException ex) {
+				throw new RuntimeException(ex);
+			}
+		};
+		return this;
+	}
 
 	public CrudComponent2<E,F> delete(Consumer<E> deleter) {
 		this.deleter = deleter;
@@ -137,5 +149,9 @@ public class CrudComponent2<E, F extends Component> extends VerticalLayout {
 	public CrudComponent2<E,F> treeGrid(Consumer<Grid<E>> setupTreeGrid) {
 		setupTreeGrid.accept(treeGrid);
 		return this;
+	}
+
+	public interface BiConsumerValidateException<T, U> {
+		void accept(T t, U u) throws ValidationException;
 	}
 }
