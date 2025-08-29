@@ -1,10 +1,15 @@
 package org.tbee.webstack.vdn.component;
 
 import com.helger.commons.base64.Base64;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.upload.FailedEvent;
+import com.vaadin.flow.component.upload.FileRejectedEvent;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import org.slf4j.Logger;
@@ -67,9 +72,20 @@ public class ImageUpload extends HorizontalLayout {
                 throw new RuntimeException(e);
             }
         });
+        upload.addFailedListener((ComponentEventListener<FailedEvent>) event -> {
+            showError(event.getReason().getMessage());
+        });
+        upload.addFileRejectedListener((ComponentEventListener<FileRejectedEvent>) event -> {
+            showError(event.getErrorMessage());
+        });
 	}
 
-	public ImageUpload src(String v) {
+    private void showError(String event) {
+        Notification notification = Notification.show(event, 5000, Notification.Position.BOTTOM_CENTER);
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+    }
+
+    public ImageUpload src(String v) {
 		image.setSrc(v);
 		return this;
 	}
