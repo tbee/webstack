@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class TreeGrid<T> extends com.vaadin.flow.component.treegrid.TreeGrid<T>
@@ -123,8 +124,22 @@ implements SizeMixin<TreeGrid<T>> {
     }
 
     ///  Add a context menu that knows what cell was clicked
+    public GridMenuItem<T> addContextMenuItem(String text, BiConsumer<Cell<T>, GridMenuItem<T>> listener) {
+        GridMenuItem<T> gridMenuItem = addContextMenu().addItem(text);
+        gridMenuItem.addMenuItemClickListener((ComponentEventListener<GridContextMenu.GridContextMenuItemClickEvent<T>>) event -> listener.accept(contextMenuClickedCell.get(), gridMenuItem));
+        return gridMenuItem;
+    }
+
+    ///  Add a context menu that knows what cell was clicked
     public GridMenuItem<T> addContextMenuItem(Component component, Consumer<Cell<T>> listener) {
         return addContextMenu().addItem(component, (ComponentEventListener<GridContextMenu.GridContextMenuItemClickEvent<T>>) event -> listener.accept(contextMenuClickedCell.get()));
+    }
+
+    ///  Add a context menu that knows what cell was clicked
+    public GridMenuItem<T> addContextMenuItem(Component component, BiConsumer<Cell<T>, GridMenuItem<T>> listener) {
+        GridMenuItem<T> gridMenuItem = addContextMenu().addItem(component);
+        gridMenuItem.addMenuItemClickListener((ComponentEventListener<GridContextMenu.GridContextMenuItemClickEvent<T>>) event -> listener.accept(contextMenuClickedCell.get(), gridMenuItem));
+        return gridMenuItem;
     }
 
     public void onContextMenuOpen(Consumer<Cell<T>> listener) {
