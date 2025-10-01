@@ -9,6 +9,8 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.renderer.Rendering;
 import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.server.ErrorEvent;
+import com.vaadin.flow.server.VaadinSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tbee.webstack.vdn.form.AbstractCrudFormLayout;
@@ -62,16 +64,19 @@ public class CrudComponent<E> extends VerticalLayout {
 		E entity = entitySupplier.get();
 		AbstractCrudFormLayout<E> form = formSupplier.get();
 		form.populateWith(entity);
-		new OkCancelDialog(title, form)
-				.okLabel("Save")
-				.onOk(() -> {
+        ConfirmationDialog.confirmCancel(title, form)
+				.confirmText("Save")
+				.onConfirm(dialog -> {
 					try {
 						form.writeTo(entity);
 						saver.accept(entity);
 						reloadGrid();
-					} catch (ValidationException e) {
-						throw new RuntimeException(e);
-					}
+                        return true;
+                    }
+                    catch (ValidationException | RuntimeException e) {
+                        VaadinSession.getCurrent().getErrorHandler().error(new ErrorEvent(e));
+                        return false;
+                    }
 				})
 				.open();
 	}
@@ -84,16 +89,19 @@ public class CrudComponent<E> extends VerticalLayout {
 
 		// Dialog
 		AbstractCrudFormLayout<E> form = formSupplier.get().populateWith(item);
-		new OkCancelDialog(title, form)
-				.okLabel("Save")
-				.onOk(() -> {
+        ConfirmationDialog.confirmCancel(title, form)
+				.confirmText("Save")
+				.onConfirm(dialog -> {
 					try {
 						form.writeTo(item);
 						saver.accept(item);
 						reloadGrid();
-					} catch (ValidationException e) {
-						throw new RuntimeException(e);
-					}
+                        return true;
+                    }
+                    catch (ValidationException | RuntimeException e) {
+                        VaadinSession.getCurrent().getErrorHandler().error(new ErrorEvent(e));
+                        return false;
+                    }
 				})
 				.open();
 	}
@@ -104,11 +112,18 @@ public class CrudComponent<E> extends VerticalLayout {
 			return;
 		}
 
-		new OkCancelDialog("Remove", new NativeLabel("Are you sure?"))
-				.okLabel("Yes")
-				.onOk(() -> {
-					deleter.accept(item);
-					reloadGrid();
+        ConfirmationDialog.confirmCancel("Remove", new NativeLabel("Are you sure?"))
+				.confirmText("Yes")
+				.onConfirm(dialog -> {
+                    try {
+                        deleter.accept(item);
+                        reloadGrid();
+                        return true;
+                    }
+                    catch (RuntimeException e) {
+                        VaadinSession.getCurrent().getErrorHandler().error(new ErrorEvent(e));
+                        return false;
+                    }
 				})
 				.open();
 	}
