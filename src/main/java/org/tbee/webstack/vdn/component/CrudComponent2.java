@@ -6,6 +6,8 @@ import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.server.ErrorEvent;
+import com.vaadin.flow.server.VaadinSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,141 +19,150 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class CrudComponent2<E, F extends Component> extends VerticalLayout {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CrudComponent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrudComponent.class);
 
-	private final Grid<E> treeGrid = new Grid<>();
-	private final String title;
+    private final Grid<E> treeGrid = new Grid<>();
+    private final String title;
 
-	private Supplier<E> entitySupplier;
-	private Function<E,F> formSupplier;
-	private BiConsumer<E,F> saver;
-	private Consumer<E> deleter;
-	private Supplier<List<E>> finder;
+    private Supplier<E> entitySupplier;
+    private Function<E,F> formSupplier;
+    private BiConsumer<E,F> saver;
+    private Consumer<E> deleter;
+    private Supplier<List<E>> finder;
 
-	public CrudComponent2(String title) {
-		this.title = title;
+    public CrudComponent2(String title) {
+        this.title = title;
 
-		// treeGrid
-		// not needed: treeGrid.setHeightFull();
-		treeGrid.setMultiSort(true); // SHIFT click adds columns
-		treeGrid.addItemDoubleClickListener(e -> edit());
-		treeGrid.addColumn(new ComponentRenderer<>(e -> new CrudIconButtonbar()
-				.onEdit(CrudComponent2.this::edit)
-				.onDelete(CrudComponent2.this::deletedPopup)
-				.padding(false)
-		)).setFlexGrow(0).setWidth("80px");
+        // treeGrid
+        // not needed: treeGrid.setHeightFull();
+        treeGrid.setMultiSort(true); // SHIFT click adds columns
+        treeGrid.addItemDoubleClickListener(e -> edit());
+        treeGrid.addColumn(new ComponentRenderer<>(e -> new CrudIconButtonbar()
+                .onEdit(CrudComponent2.this::edit)
+                .onDelete(CrudComponent2.this::deletedPopup)
+                .padding(false)
+        )).setFlexGrow(0).setWidth("80px");
 
-		// crudButtonbar
-		CrudButtonbar crudButtonbar = new CrudButtonbar()
-				.onReload(this::reloadGrid)
-				.onInsert(this::insert);
+        // crudButtonbar
+        CrudButtonbar crudButtonbar = new CrudButtonbar()
+                .onReload(this::reloadGrid)
+                .onInsert(this::insert);
 
-		// content
-		add(crudButtonbar, treeGrid);
-		setSizeFull();
-	}
+        // content
+        add(crudButtonbar, treeGrid);
+        setSizeFull();
+    }
 
-	private void insert() {
-		E entity = entitySupplier.get();
-		F form = formSupplier.apply(entity);
-		ConfirmationDialog.confirmCancel(title, form)
-				.confirmText("Save")
-				.onConfirm(() -> {
-					saver.accept(entity, form);
-					reloadGrid();
-				})
-				.open();
-	}
+    private void insert() {
+        E entity = entitySupplier.get();
+        save(entity);
+    }
 
-	private void edit() {
-		E item = getSelectedItem();
-		if (item == null) {
-			return;
-		}
+    private void edit() {
+        E entity = getSelectedItem();
+        if (entity == null) {
+            return;
+        }
+        save(entity);
+    }
 
-		// Dialog
-		F form = formSupplier.apply(item);
-		ConfirmationDialog.confirmCancel(title, form)
-				.confirmText("Save")
-				.onConfirm(() -> {
-					saver.accept(item, form);
-					reloadGrid();
-				})
-				.open();
-	}
+    private void save(E item) {
+        F form = formSupplier.apply(item);
+        ConfirmationDialog.confirmCancel(title, form)
+                .confirmText("Save")
+                .onConfirm(dialog -> {
+                    try {
+                        saver.accept(item, form);
+                        reloadGrid();
+                        return true;
+                    }
+                    catch (RuntimeException e) {
+                        VaadinSession.getCurrent().getErrorHandler().error(new ErrorEvent(e));
+                        return false;
+                    }
+                })
+                .open();
+    }
 
-	private void deletedPopup() {
-		E item = getSelectedItem();
-		if (item == null) {
-			return;
-		}
+    private void deletedPopup() {
+        E item = getSelectedItem();
+        if (item == null) {
+            return;
+        }
 
-		ConfirmationDialog.confirmCancel("Remove", new NativeLabel("Are you sure?"))
-				.confirmText("Yes")
-				.onConfirm(() -> {
-					deleter.accept(item);
-					reloadGrid();
-				})
-				.open();
-	}
+        ConfirmationDialog.confirmCancel("Remove", new NativeLabel("Are you sure?"))
+                .confirmText("Yes")
+                .onConfirm(dialog -> {
+                    try {
+                        deleter.accept(item);
+                        reloadGrid();
+                        return true;
+                    }
+                    catch (RuntimeException e) {
+                        VaadinSession.getCurrent().getErrorHandler().error(new ErrorEvent(e));
+                        return false;
+                    }
+                })
+                .open();
+    }
 
-	public void reloadGrid() {
-		List<E> items = finder.get();
-		treeGrid.setItems(items);
-	}
+    public void reloadGrid() {
+        List<E> items = finder.get();
+        treeGrid.setItems(items);
+    }
 
-	private E getSelectedItem() {
-		Set<E> selectedItems = treeGrid.getSelectedItems();
-		if (selectedItems.size() != 1) {
-			return null;
-		}
+    private E getSelectedItem() {
+        Set<E> selectedItems = treeGrid.getSelectedItems();
+        if (selectedItems.size() != 1) {
+            return null;
+        }
         return selectedItems.iterator().next();
-	}
+    }
 
-	// =====================================
+    // =====================================
 
-	public CrudComponent2<E,F> entity(Supplier<E> entitySupplier) {
-		this.entitySupplier = entitySupplier;
-		return this;
-	}
+    public CrudComponent2<E,F> entity(Supplier<E> entitySupplier) {
+        this.entitySupplier = entitySupplier;
+        return this;
+    }
 
-	public CrudComponent2<E,F> form(Function<E,F> formSupplier) {
-		this.formSupplier = formSupplier;
-		return this;
-	}
+    public CrudComponent2<E,F> form(Function<E,F> formSupplier) {
+        this.formSupplier = formSupplier;
+        return this;
+    }
 
-	public CrudComponent2<E,F> save(BiConsumer<E, F> saver) {
-		this.saver = saver;
-		return this;
-	}
-	public CrudComponent2<E,F> saveVE(BiConsumerValidateException<E, F> saver) {
-		this.saver = (e, f) -> {
-			try {
-				saver.accept(e, f);
-			}
-			catch (ValidationException ex) {
-				throw new RuntimeException(ex);
-			}
-		};
-		return this;
-	}
+    public CrudComponent2<E,F> save(BiConsumer<E, F> saver) {
+        this.saver = saver;
+        return this;
+    }
+    public CrudComponent2<E,F> saveVE(BiConsumerValidateException<E, F> saver) {
+        this.saver = (e, f) -> {
+            try {
+                saver.accept(e, f);
+            }
+            catch (ValidationException ex) {
+                throw new RuntimeException(ex);
+            }
+        };
+        return this;
+    }
 
-	public CrudComponent2<E,F> delete(Consumer<E> deleter) {
-		this.deleter = deleter;
-		return this;
-	}
+    public CrudComponent2<E,F> delete(Consumer<E> deleter) {
+        this.deleter = deleter;
+        return this;
+    }
 
-	public CrudComponent2<E,F> find(Supplier<List<E>> finder) {
-		this.finder = finder;
-		return this;
-	}
+    public CrudComponent2<E,F> find(Supplier<List<E>> finder) {
+        this.finder = finder;
+        return this;
+    }
 
-	public CrudComponent2<E,F> treeGrid(Consumer<Grid<E>> setupTreeGrid) {
-		setupTreeGrid.accept(treeGrid);
-		return this;
-	}
+    public CrudComponent2<E,F> treeGrid(Consumer<Grid<E>> setupTreeGrid) {
+        setupTreeGrid.accept(treeGrid);
+        return this;
+    }
 
-	public interface BiConsumerValidateException<T, U> {
-		void accept(T t, U u) throws ValidationException;
-	}
+    public interface BiConsumerValidateException<T, U> {
+        void accept(T t, U u) throws ValidationException;
+    }
 }
