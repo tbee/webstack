@@ -1,6 +1,5 @@
 package org.tbee.webstack.jasper;
 
-import com.helger.commons.base64.Base64;
 import net.sf.jasperreports.engine.export.HtmlResourceHandler;
 
 import java.net.URLConnection;
@@ -13,7 +12,7 @@ public class InMemoryEmbeddedImageHtmlResourceHandler implements HtmlResourceHan
     @Override
     public void handleResource(String id, byte[] data) {
         String mimeType = URLConnection.guessContentTypeFromName(id);
-        images.put(id, "data:" + mimeType + ";base64," + Base64.encodeBytes(data));
+        images.put(id, "data:" + mimeType + ";base64," + java.util.Base64.getEncoder().encodeToString(data));
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.grid.contextmenu.GridMenuItem;
-import com.vaadin.flow.component.treegrid.TreeGridArrayUpdater;
 import com.vaadin.flow.data.provider.hierarchy.HierarchicalDataProvider;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
@@ -27,20 +26,12 @@ implements SizeMixin<TreeGrid<T>> {
     public TreeGrid() {
     }
 
-    public TreeGrid(int pageSize, DataCommunicatorBuilder<T, TreeGridArrayUpdater> dataCommunicatorBuilder) {
-        super(pageSize, dataCommunicatorBuilder);
-    }
-
     public TreeGrid(Class<T> beanType) {
         super(beanType);
     }
 
     public TreeGrid(Class<T> beanType, boolean autoCreateColumns) {
         super(beanType, autoCreateColumns);
-    }
-
-    public TreeGrid(Class<T> beanType, DataCommunicatorBuilder<T, TreeGridArrayUpdater> dataCommunicatorBuilder) {
-        super(beanType, dataCommunicatorBuilder);
     }
 
     public TreeGrid(HierarchicalDataProvider<T, ?> dataProvider) {

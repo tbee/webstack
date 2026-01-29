@@ -1,6 +1,5 @@
 package org.tbee.webstack.vdn.component;
 
-import com.helger.commons.base64.Base64;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.html.Div;
@@ -12,13 +11,20 @@ import com.vaadin.flow.component.upload.FailedEvent;
 import com.vaadin.flow.component.upload.FileRejectedEvent;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.FileBuffer;
+import com.vaadin.flow.server.streams.FileUploadHandler;
+import com.vaadin.flow.server.streams.InMemoryUploadCallback;
+import com.vaadin.flow.server.streams.InMemoryUploadHandler;
+import com.vaadin.flow.server.streams.UploadHandler;
+import com.vaadin.flow.server.streams.UploadMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.Base64;
 
 /// Combination of the image and upload component.
 /// Will preview the uploaded file in the image component.
@@ -45,39 +51,34 @@ public class ImageUpload extends HorizontalLayout {
 	private static final Logger LOG = LoggerFactory.getLogger(ImageUpload.class);
 
 	private final Image image = new Image();
-	private final FileBuffer buffer = new FileBuffer();
-	private final Upload upload = new Upload(buffer);
+	private final Upload upload;
+	private String filename;
+	private String mimeType;
+	private byte[] data;
 
 	public ImageUpload() {
-		setPadding(false);
-		add(new Div(image), upload);
-
-		image.setHeight("100px");
-
+		InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((metadata, bytes) -> {
+			this.filename = metadata.fileName();
+			this.mimeType = metadata.contentType();
+			this.data = bytes;
+			image.setSrc("data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes));
+		});
+		upload = new Upload(inMemoryHandler);
 		upload.setMaxFiles(1);
 		upload.setMaxFileSize(512 * 1024);
 		upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
 
-		upload.addSucceededListener(event -> {
-			String mimeType = URLConnection.guessContentTypeFromName(event.getFileName());
-			try (
-				InputStream inputStream = inputStream();
-			) {
-				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				inputStream.transferTo(outputStream);
-				image.setSrc("data:" + mimeType + ";base64," + Base64.encodeBytes(outputStream.toByteArray()));
-			}
-            catch (IOException e) {
-				LOG.error("Failed to read image from upload", e);
-                throw new RuntimeException(e);
-            }
-        });
-        upload.addFailedListener((ComponentEventListener<FailedEvent>) event -> {
-            showError(event.getReason().getMessage());
-        });
+//        upload.addFailedListener((ComponentEventListener<FailedEvent>) event -> {
+//            showError(event.getReason().getMessage());
+//        });
         upload.addFileRejectedListener((ComponentEventListener<FileRejectedEvent>) event -> {
             showError(event.getErrorMessage());
         });
+
+
+		setPadding(false);
+		add(new Div(image), upload);
+		image.setHeight("100px");
 	}
 
     private void showError(String event) {
@@ -111,21 +112,18 @@ public class ImageUpload extends HorizontalLayout {
 	}
 
 	public String filename() {
-		return buffer.getFileName();
+		return this.filename;
 	}
 	public String mimeType() {
-		return URLConnection.guessContentTypeFromName(buffer.getFileName());
+		return this.mimeType;
 	}
 
 	/// @return inputstream, caller needs to close this.
 	public InputStream inputStream() {
-		if (buffer.getFileData() == null) {
-			return null;
-		}
-		return buffer.getInputStream();
+		return new ByteArrayInputStream(data);
 	}
 
 	public boolean hasUpload() {
-		return buffer.getFileData() != null;
+		return data != null;
 	}
 }
