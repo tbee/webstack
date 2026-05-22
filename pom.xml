@@ -39,6 +39,7 @@
 		<vaadin.version>25.0.3</vaadin.version> <!-- https://vaadin.com/releases -->
 		<springboot.version>4.0.2</springboot.version>
         <jasperreports.version>7.0.3</jasperreports.version>
+		<testcontainers.version>1.20.6</testcontainers.version>
 	</properties>
 
 	<dependencyManagement>
@@ -116,7 +117,27 @@
             <version>${jasperreports.version}</version>
         </dependency>
 
-        <dependency>
+		<!-- dependencies intended for test scope in the using project are here marked with scope provided, so that they are available for testing but not forced as a dependency -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.7</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
