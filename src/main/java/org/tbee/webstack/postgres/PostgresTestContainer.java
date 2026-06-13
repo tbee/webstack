@@ -53,9 +53,16 @@ public class PostgresTestContainer {
 
             // Setup spring
             if (configureSpringDatasource) {
+                log.accept("Autoconfiguring spring datasource:");
+                log.accept("* spring.datasource.url=" + postgreSQLContainer.getJdbcUrl());
+                log.accept("* spring.datasource.username=" + postgreSQLContainer.getUsername());
+                log.accept("* spring.datasource.password=" + postgreSQLContainer.getPassword());
+                log.accept("* spring.datasource.driver-class-name=" + postgreSQLContainer.getDriverClassName());
+
                 System.setProperty("spring.datasource.url", postgreSQLContainer.getJdbcUrl());
                 System.setProperty("spring.datasource.username", postgreSQLContainer.getUsername());
                 System.setProperty("spring.datasource.password", postgreSQLContainer.getPassword());
+                System.setProperty("spring.datasource.driver-class-name", postgreSQLContainer.getDriverClassName());
             }
 
             // Mark as started
