@@ -26,6 +26,9 @@ public class PostgreSQLOnHsqldbCompatibilityDialect extends PostgreSQLDialect {
         if (sqlTypeCode == SqlTypes.CLOB) {
             return "text";
         }
+        if (sqlTypeCode == SqlTypes.BLOB) {
+            return "bytea";
+        }
         return super.columnType(sqlTypeCode);
     }
 
@@ -33,6 +36,9 @@ public class PostgreSQLOnHsqldbCompatibilityDialect extends PostgreSQLDialect {
     protected String castType(int sqlTypeCode) {
         if (SqlTypes.CLOB == sqlTypeCode) {
             return "text";
+        }
+        if (SqlTypes.BLOB == sqlTypeCode) {
+            return "bytea";
         }
         return super.castType(sqlTypeCode);
     }
