@@ -5,6 +5,9 @@ import org.testcontainers.utility.MountableFile;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class PostgresTestContainer {
@@ -16,7 +19,7 @@ public class PostgresTestContainer {
     private boolean preventDoubleStart = true;
     private boolean configureSpringDatasource = true;
     private Consumer<String> log = System.out::println;
-    private File dumpfile;
+    private final List<File> loadFiles = new ArrayList<>();
 
     public record Info(String containerId, String url) {}
 
@@ -43,11 +46,11 @@ public class PostgresTestContainer {
             postgreSQLContainer.start();
             log.accept("Postgres container started on " + postgreSQLContainer.getJdbcUrl());
 
-            // Restore a database
-            if (dumpfile != null) {
-                log.accept("Importing " + dumpfile);
+            // Restore a database, run an init script, ...
+            for (File file : loadFiles) {
+                log.accept("Importing " + file);
                 String containerPath = "/tmp/dump.sql";
-                postgreSQLContainer.copyFileToContainer(MountableFile.forHostPath(Path.of(dumpfile.getAbsolutePath())), containerPath);
+                postgreSQLContainer.copyFileToContainer(MountableFile.forHostPath(Path.of(file.getAbsolutePath())), containerPath);
                 postgreSQLContainer.execInContainer("psql", "-U", username, "-d", database, "-f", containerPath);
             }
 
@@ -132,15 +135,15 @@ public class PostgresTestContainer {
         return this;
     }
 
-    public File load() {
-        return dumpfile;
+    public List<File> load() {
+        return Collections.unmodifiableList(loadFiles);
     }
 
-    public PostgresTestContainer load(File dumpfile) {
-        if (!dumpfile.exists()) {
-            throw new IllegalStateException("dumpfile does not exist: " + dumpfile.getAbsolutePath());
+    public PostgresTestContainer load(File file) {
+        if (!file.exists()) {
+            throw new IllegalStateException("file does not exist: " + file.getAbsolutePath());
         }
-        this.dumpfile = dumpfile;
+        this.loadFiles.add(file);
         return this;
     }
 
