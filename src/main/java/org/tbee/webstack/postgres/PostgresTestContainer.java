@@ -5,6 +5,8 @@ import org.testcontainers.utility.MountableFile;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +47,13 @@ public class PostgresTestContainer {
                     .waitingFor(org.testcontainers.containers.wait.strategy.Wait.forListeningPort());
             postgreSQLContainer.start();
             log.accept("Postgres container started on " + postgreSQLContainer.getJdbcUrl());
+            log.accept("- Create dump: pg_dump" +
+                    " --host=" + postgreSQLContainer.getHost() +
+                    " --port=" + postgreSQLContainer.getFirstMappedPort() +
+                    " --username=" + postgreSQLContainer.getUsername() +
+                    " --dbname=" + postgreSQLContainer.getDatabaseName() +
+                    " > " + postgreSQLContainer.getDatabaseName() + "_" + DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(LocalDateTime.now()) + ".sql");
+            log.accept("- Add --schema-only to export without data.");
 
             // Restore a database, run an init script, ...
             for (File file : loadFiles) {
