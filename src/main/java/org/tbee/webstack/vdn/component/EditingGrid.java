@@ -3,6 +3,7 @@ package org.tbee.webstack.vdn.component;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.textfield.TextField;
@@ -13,6 +14,7 @@ import com.vaadin.flow.function.ValueProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -69,10 +71,10 @@ public class EditingGrid<BEAN> extends Grid<BEAN> {
         return Collections.unmodifiableList(items);
     }
 
-    public void setItems(List<BEAN> items) {
+    public GridListDataView<BEAN> setItems(Collection<BEAN> items) {
         this.items.clear();
         this.items.addAll(items);
-        setItems(new ListDataProvider<>(this.items));
+        return setItems(new ListDataProvider<>(this.items));
     }
 
     public void addItems(BEAN... items) {
@@ -88,11 +90,9 @@ public class EditingGrid<BEAN> extends Grid<BEAN> {
     public Column<BEAN> addCrudIconButtonbarColumn() {
         return addComponentColumn((ValueProvider<BEAN, Component>) bean -> new CrudIconButtonbar()
                 .onEdit(EditingGrid.this.onEdit == null ? null : () -> EditingGrid.this.onEdit.accept(bean))
-                .onDelete(() -> new OkCancelDialog("Remove item", new NativeLabel("Are you sure?"))
-                                    .okLabel("Yes")
-                                    .onOk(() -> {
-                                        removeItems(bean);
-                                    })
+                .onDelete(() -> new ConfirmationDialog("Remove item", new NativeLabel("Are you sure?"))
+                                    .confirmText("Yes")
+                                    .onConfirm(() -> removeItems(bean))
                                     .open()));
     }
 
