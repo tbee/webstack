@@ -10,9 +10,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class PostgresTestContainer {
+
+    /**
+     * Registry of running containers keyed by database name, so that a running
+     * application can trigger a dump without holding a reference to the container
+     * (which is relevant with Spring DevTools hot-reload, where the launcher's
+     * main() is not re-run but the application classloader is recreated).
+     */
+    private static final Map<String, PostgreSQLContainer<?>> RUNNING = new ConcurrentHashMap<>();
 
     private String containerName = "postgres:18";
     private String database;
@@ -21,6 +31,7 @@ public class PostgresTestContainer {
     private boolean preventDoubleStart = true;
     private boolean configureSpringDatasource = true;
     private Consumer<String> log = System.out::println;
+    private File restoreFile = null;
     private final List<File> loadFiles = new ArrayList<>();
 
     public record Info(String containerId, String url) {}
@@ -55,12 +66,15 @@ public class PostgresTestContainer {
                     " > " + postgreSQLContainer.getDatabaseName() + "_" + DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(LocalDateTime.now()) + ".sql");
             log.accept("- Add --schema-only to export without data.");
 
-            // Restore a database, run an init script, ...
+            // Register so dump(...) can find this container by database name
+            RUNNING.put(database, postgreSQLContainer);
+
+            // Restore a database dump first, then run any additional load scripts on top
+            if (restoreFile != null) {
+                importSqlFile(postgreSQLContainer, restoreFile, "restoring");
+            }
             for (File file : loadFiles) {
-                log.accept("Importing " + file);
-                String containerPath = "/tmp/dump.sql";
-                postgreSQLContainer.copyFileToContainer(MountableFile.forHostPath(Path.of(file.getAbsolutePath())), containerPath);
-                postgreSQLContainer.execInContainer("psql", "-U", username, "-d", database, "-f", containerPath);
+                importSqlFile(postgreSQLContainer, file, "loading");
             }
 
             // Setup spring
@@ -85,6 +99,76 @@ public class PostgresTestContainer {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void importSqlFile(PostgreSQLContainer<?> postgreSQLContainer, File file, String action) throws Exception {
+        log.accept(action.substring(0, 1).toUpperCase() + action.substring(1) + " " + file);
+        String containerPath = "/tmp/import.sql";
+        postgreSQLContainer.copyFileToContainer(MountableFile.forHostPath(Path.of(file.getAbsolutePath())), containerPath);
+        var result = postgreSQLContainer.execInContainer("psql", "-U", username, "-d", database, "-f", containerPath);
+        if (result.getExitCode() != 0) {
+            throw new IllegalStateException("Error " + action + " " + file + ":\n" + result.getStderr());
+        }
+    }
+
+    // =================================
+    // DUMP
+
+    /**
+     * Create a dump of the running container's database using pg_dump run inside the container,
+     * then copy the resulting file out to the given target on the host.
+     * <p>
+     * This is a static method (using the single running container) so that a running application
+     * can trigger a dump without holding a reference to the container, which is relevant with
+     * Spring DevTools hot-reload where the launcher's main() is not re-run but the application
+     * classloader is recreated.
+     * <p>
+     * Must be called after {@link #start()}.
+     */
+    public static File dump(File target) {
+        return dump(target, System.out::println);
+    }
+
+    /**
+     * Create a timestamped dump ({@code <database>_yyyyMMdd_HHmmss.sql}) in the current working directory.
+     */
+    public static File dump() {
+        return dump(defaultDumpFile(runningContainer().getDatabaseName()));
+    }
+
+    private static PostgreSQLContainer<?> runningContainer() {
+        return RUNNING.values().stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No running Postgres container registered; call start() first."));
+    }
+
+    private static File dump(File target, Consumer<String> log) {
+        PostgreSQLContainer<?> postgreSQLContainer = runningContainer();
+        try {
+            String containerPath = "/tmp/dump.sql";
+            log.accept("Dumping database '" + postgreSQLContainer.getDatabaseName() + "' to " + target.getAbsolutePath());
+            var result = postgreSQLContainer.execInContainer("pg_dump",
+                    "-U", postgreSQLContainer.getUsername(),
+                    "-d", postgreSQLContainer.getDatabaseName(),
+                    "-f", containerPath);
+            if (result.getExitCode() != 0) {
+                throw new IllegalStateException("pg_dump failed:\n" + result.getStderr());
+            }
+            File parent = target.getAbsoluteFile().getParentFile();
+            if (parent != null) {
+                parent.mkdirs();
+            }
+            postgreSQLContainer.copyFileFromContainer(containerPath, target.getAbsolutePath());
+            log.accept("Dump written to " + target.getAbsolutePath());
+            return target;
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static File defaultDumpFile(String database) {
+        return new File(database + "_" + DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(LocalDateTime.now()) + ".sql");
     }
 
     // =================================
@@ -153,6 +237,22 @@ public class PostgresTestContainer {
             throw new IllegalStateException("file does not exist: " + file.getAbsolutePath());
         }
         this.loadFiles.add(file);
+        return this;
+    }
+
+    public File restore() {
+        return restoreFile;
+    }
+
+    /**
+     * Register a dump file to restore into the database on {@link #start()}.
+     * Restore files are imported before any {@link #load(File)} scripts.
+     */
+    public PostgresTestContainer restore(File file) {
+        if (!file.exists()) {
+            throw new IllegalStateException("file does not exist: " + file.getAbsolutePath());
+        }
+        this.restoreFile = file;
         return this;
     }
 
