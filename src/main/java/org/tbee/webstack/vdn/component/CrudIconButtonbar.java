@@ -1,6 +1,7 @@
 package org.tbee.webstack.vdn.component;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 
@@ -10,10 +11,10 @@ public class CrudIconButtonbar extends HorizontalLayout {
     private Runnable onInsert = null;
     private Runnable onEdit = null;
     private Runnable onDelete = null;
-    private final IconButton reloadButton = new IconButton(LumoIcon.RELOAD.create(), e -> onReload.run());
-    private final IconButton insertButton = new IconButton(LumoIcon.PLUS.create(), e -> onInsert.run());
-    private final IconButton editButton = new IconButton(LumoIcon.EDIT.create(), e -> onEdit.run());
-    private final IconButton deleteButton = new IconButton(LumoIcon.MINUS.create(), e -> onDelete.run());
+    private final IconButton reloadButton = new IconButton(icon(LumoIcon.RELOAD, "crud-reload"), e -> onReload.run());
+    private final IconButton insertButton = new IconButton(icon(LumoIcon.PLUS, "crud-insert"), e -> onInsert.run());
+    private final IconButton editButton = new IconButton(icon(LumoIcon.EDIT, "crud-edit"), e -> onEdit.run());
+    private final IconButton deleteButton = new IconButton(icon(LumoIcon.MINUS, "crud-delete"), e -> onDelete.run());
 
     public CrudIconButtonbar() {
         this(false);
@@ -57,5 +58,11 @@ public class CrudIconButtonbar extends HorizontalLayout {
     public CrudIconButtonbar padding(boolean b) {
         setPadding(b);
         return this;
+    }
+
+    private static Icon icon(LumoIcon lumoIcon, String id) {
+        Icon icon = lumoIcon.create();
+        icon.setId(id);
+        return icon;
     }
 }
