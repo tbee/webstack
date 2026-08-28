@@ -29,6 +29,7 @@ public class CrudComponent2<E, F extends Component> extends VerticalLayout {
     private BiConsumer<E,F> saver;
     private Consumer<E> deleter;
     private Supplier<List<E>> finder;
+    private Function<E,E> reloader;
 
     public CrudComponent2(String title) {
         this.title = title;
@@ -62,6 +63,12 @@ public class CrudComponent2<E, F extends Component> extends VerticalLayout {
         E entity = getSelectedItem();
         if (entity == null) {
             return;
+        }
+        if (reloader != null) {
+            entity = reloader.apply(entity);
+            if (entity == null) {
+                return;
+            }
         }
         save(entity);
     }
@@ -154,6 +161,11 @@ public class CrudComponent2<E, F extends Component> extends VerticalLayout {
 
     public CrudComponent2<E,F> find(Supplier<List<E>> finder) {
         this.finder = finder;
+        return this;
+    }
+
+    public CrudComponent2<E,F> reloader(Function<E,E> reloader) {
+        this.reloader = reloader;
         return this;
     }
 
