@@ -18,6 +18,7 @@ import org.tbee.webstack.vdn.form.AbstractCrudFormLayout;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class CrudComponent<E> extends VerticalLayout {
@@ -30,6 +31,7 @@ public class CrudComponent<E> extends VerticalLayout {
 	private final Consumer<E> deleter;
 	private final Supplier<List<E>> finder;
 	private final String title;
+	private Function<E, E> reloader;
 
 	public CrudComponent(String title, Supplier<E> entitySupplier, Consumer<E> saver, Consumer<E> deleter, Supplier<List<E>> finder, Supplier<AbstractCrudFormLayout<E>> formSupplier, Consumer<Grid<E>> setupTreeGrid) {
 		this.title = title;
@@ -87,14 +89,23 @@ public class CrudComponent<E> extends VerticalLayout {
 			return;
 		}
 
+		if (reloader != null) {
+			item = reloader.apply(item);
+			if (item == null) {
+				return;
+			}
+		}
+
+		final E editItem = item;
+
 		// Dialog
-		AbstractCrudFormLayout<E> form = formSupplier.get().populateWith(item);
+		AbstractCrudFormLayout<E> form = formSupplier.get().populateWith(editItem);
         ConfirmationDialog.confirmCancel(title, form)
 				.confirmText("Save")
 				.onConfirm(dialog -> {
 					try {
-						form.writeTo(item);
-						saver.accept(item);
+						form.writeTo(editItem);
+						saver.accept(editItem);
 						reloadGrid();
                         return true;
                     }
@@ -126,6 +137,11 @@ public class CrudComponent<E> extends VerticalLayout {
                     }
 				})
 				.open();
+	}
+
+	public CrudComponent<E> reloader(Function<E, E> reloader) {
+		this.reloader = reloader;
+		return this;
 	}
 
 	public void reloadGrid() {
