@@ -29,4 +29,10 @@ public interface FlexMixin<C extends FlexComponent> {
         ((C)this).setJustifyContentMode(justifyContentMode);
         return (C)this;
     }
+
+    /// Wrap lets overflowing components go to a new line/column.
+    default C wrap() {
+        ((C)this).getStyle().set("flex-wrap", "wrap");
+        return (C)this;
+    }
 }
