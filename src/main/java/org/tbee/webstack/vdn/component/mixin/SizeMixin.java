@@ -66,4 +66,10 @@ public interface SizeMixin<C extends HasSize> {
         ((C)this).setMinHeight(height, unit);
         return (C)this;
     }
+
+    default C size(float width, float height, Unit unit) {
+        ((C)this).setWidth(width, unit);
+        ((C)this).setHeight(height, unit);
+        return (C)this;
+    }
 }
