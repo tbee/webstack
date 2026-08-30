@@ -1,29 +1,22 @@
 package org.tbee.webstack.vdn.component;
 
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.upload.FailedEvent;
 import com.vaadin.flow.component.upload.FileRejectedEvent;
 import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.FileBuffer;
-import com.vaadin.flow.server.streams.FileUploadHandler;
-import com.vaadin.flow.server.streams.InMemoryUploadCallback;
 import com.vaadin.flow.server.streams.InMemoryUploadHandler;
 import com.vaadin.flow.server.streams.UploadHandler;
-import com.vaadin.flow.server.streams.UploadMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLConnection;
 import java.util.Base64;
 
 /// Combination of the image and upload component.
@@ -79,6 +72,10 @@ public class ImageUpload extends HorizontalLayout {
 		setPadding(false);
 		add(new Div(image), upload);
 		image.setHeight("100px");
+		image.getStyle()
+				.set("object-fit", "contain") // https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/object-fit
+				.set("border-radius", "var(--lumo-border-radius-m)");
+		image.addClickListener(e -> showPopup());
 	}
 
     private void showError(String event) {
@@ -86,7 +83,22 @@ public class ImageUpload extends HorizontalLayout {
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 
-    public ImageUpload src(String v) {
+	private void showPopup() {
+		Image image = new Image();
+		image.setSrc(this.image.getSrc());
+		image.getStyle()
+				.set("object-fit", "contain") // https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/object-fit
+				.set("border-radius", "var(--lumo-border-radius-m)");
+		image.setSizeFull();
+
+		ConfirmationDialog.confirm("", image)
+				.sizeFull()
+				.maxHeight(90, Unit.PERCENTAGE)
+				.maxWidth(90, Unit.PERCENTAGE)
+				.show();
+	}
+
+	public ImageUpload src(String v) {
 		image.setSrc(v);
 		return this;
 	}
