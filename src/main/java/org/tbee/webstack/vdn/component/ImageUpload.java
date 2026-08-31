@@ -5,6 +5,7 @@ import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -42,8 +43,10 @@ import java.util.Base64;
 @Uses(Upload.class)
 public class ImageUpload extends HorizontalLayout {
 	private static final Logger LOG = LoggerFactory.getLogger(ImageUpload.class);
+	private static final String TRANSPARENT = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
 
-	private final Image image = new Image();
+	private final Image image = new Image(TRANSPARENT, "");
+	private final Div imageDiv = new Div(image);
 	private final Upload upload;
 	private String filename;
 	private String mimeType;
@@ -67,35 +70,49 @@ public class ImageUpload extends HorizontalLayout {
         upload.addFileRejectedListener((ComponentEventListener<FileRejectedEvent>) event -> {
             showError(event.getErrorMessage());
         });
-
+		image.setHeight("110px");
+		image.setWidth("110px");
+		image.getStyle()
+				.set("object-fit", "cover") // https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/object-fit
+				.set("border-radius", "var(--lumo-border-radius-m)")
+				.set("border", "1px dotted gray");
+		image.addClickListener(e -> showPopup());
 
 		setPadding(false);
-		add(new Div(image), upload);
-		image.setHeight("100px");
-		image.getStyle()
-				.set("object-fit", "contain") // https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/object-fit
-				.set("border-radius", "var(--lumo-border-radius-m)");
-		image.addClickListener(e -> showPopup());
+		add(imageDiv, upload);
 	}
 
-    private void showError(String event) {
+	private void showError(String event) {
         Notification notification = Notification.show(event, 5000, Notification.Position.BOTTOM_CENTER);
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 
 	private void showPopup() {
-		Image image = new Image();
-		image.setSrc(this.image.getSrc());
-		image.getStyle()
+		Image popupImage = new Image();
+		popupImage.setSrc(this.image.getSrc());
+		popupImage.getStyle()
 				.set("object-fit", "contain") // https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/object-fit
 				.set("border-radius", "var(--lumo-border-radius-m)");
-		image.setSizeFull();
+		popupImage.setSizeFull();
 
-		ConfirmationDialog.confirm("", image)
+		ConfirmationDialog.confirm("", popupImage)
 				.sizeFull()
 				.maxHeight(90, Unit.PERCENTAGE)
 				.maxWidth(90, Unit.PERCENTAGE)
+				.rejectable()
+				.rejectText("")
+				.rejectIcon(VaadinIcon.TRASH.create())
+				.onReject(() -> {
+					this.filename = null;
+					this.mimeType = null;
+					this.data = null;
+					image.setSrc(TRANSPARENT);
+				})
 				.show();
+	}
+
+	public boolean hasImage() {
+		return image.getSrc() != null && !TRANSPARENT.equals(image.getSrc());
 	}
 
 	public ImageUpload src(String v) {
