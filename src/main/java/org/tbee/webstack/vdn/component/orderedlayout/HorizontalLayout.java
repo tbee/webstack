@@ -1,6 +1,7 @@
 package org.tbee.webstack.vdn.component.orderedlayout;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
 import org.tbee.webstack.vdn.component.mixin.FlexMixin;
 import org.tbee.webstack.vdn.component.mixin.SizeMixin;
@@ -30,4 +31,8 @@ implements ComponentMixin<HorizontalLayout>, SizeMixin<HorizontalLayout>, StyleM
         return this;
     }
 
+    /// The items are placed vertically centered, so a horizontal line runs through their centers.
+    public HorizontalLayout centered() {
+        return alignItems(FlexComponent.Alignment.CENTER); // vertically centered
+    }
 }
