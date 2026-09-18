@@ -25,5 +25,5 @@ replay_pid*
 
 javaHome.cmd
 .idea
-/target
+target/
 hsqldb
