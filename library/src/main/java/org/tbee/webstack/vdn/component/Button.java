@@ -5,12 +5,14 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.ButtonVariant;
 import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
+import org.tbee.webstack.vdn.component.mixin.SizeMixin;
 import org.tbee.webstack.vdn.component.mixin.TextMixin;
+import org.tbee.webstack.vdn.component.mixin.ThemeVariantMixin;
 
 import java.util.function.Consumer;
 
 public class Button extends com.vaadin.flow.component.button.Button
-implements ComponentMixin<Button>, TextMixin<Button> {
+implements ComponentMixin<Button>, TextMixin<Button>, SizeMixin<Button>, ThemeVariantMixin<ButtonVariant, Button> {
 
     public Button() {
     }

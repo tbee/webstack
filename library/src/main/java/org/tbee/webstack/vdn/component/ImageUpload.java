@@ -15,6 +15,7 @@ import com.vaadin.flow.server.streams.InMemoryUploadHandler;
 import com.vaadin.flow.server.streams.UploadHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -41,7 +42,8 @@ import java.util.Base64;
 ///         }
 /// ```
 @Uses(Upload.class)
-public class ImageUpload extends HorizontalLayout {
+public class ImageUpload extends HorizontalLayout
+implements ComponentMixin<ImageUpload> {
 	private static final Logger LOG = LoggerFactory.getLogger(ImageUpload.class);
 	private static final String TRANSPARENT = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
 
