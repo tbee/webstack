@@ -18,4 +18,14 @@ public interface ComponentMixin<C extends Component> {
     default boolean visible() {
         return ((C)this).isVisible();
     }
+
+    /// Set the attribute on the associated element
+    default C attribute(String attribute, String value) {
+        ((C)this).getElement().setAttribute(attribute, value);
+        return (C)this;
+    }
+
+    default C ariaLabel(String value) {
+        return (C)this.attribute("aria-label", value);
+    }
 }
