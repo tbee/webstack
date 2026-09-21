@@ -13,6 +13,8 @@ public interface StyleMixin<C extends HasStyle> {
         return (C)this;
     }
 
+    // COMMON USAGES
+
     default C fontSize(String v) {
         style("font-size", v);
         return (C)this;
@@ -22,4 +24,10 @@ public interface StyleMixin<C extends HasStyle> {
         style("opacity", ""  + v);
         return (C)this;
     }
+
+    default C backgroundColor(String v) {
+        style("background-color", v);
+        return (C)this;
+    }
+
 }

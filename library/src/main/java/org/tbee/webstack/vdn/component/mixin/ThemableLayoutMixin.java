@@ -32,4 +32,13 @@ public interface ThemableLayoutMixin<C extends ThemableLayout> {
         ((C)this).getThemeList().add(v);
         return (C)this;
     }
+
+    // COMMON USAGE
+
+    /// Lean means 'not fat', so no padding, no margin. Used very often to just have stuff wrapped in a container
+    default C lean() {
+        margin(false);
+        padding(false);
+        return (C)this;
+    }
 }
