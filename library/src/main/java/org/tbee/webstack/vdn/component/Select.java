@@ -1,9 +1,16 @@
 package org.tbee.webstack.vdn.component;
 
+import com.vaadin.flow.component.combobox.ComboBox;
+import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
+import org.tbee.webstack.vdn.component.mixin.LabelMixin;
+import org.tbee.webstack.vdn.component.mixin.PlaceholderMixin;
+import org.tbee.webstack.vdn.component.mixin.SizeMixin;
+
 import java.util.List;
 import java.util.function.Consumer;
 
-public class Select<T> extends com.vaadin.flow.component.select.Select<T> {
+public class Select<T> extends com.vaadin.flow.component.select.Select<T>
+        implements ComponentMixin<Select<T>>, LabelMixin<Select<T>>, PlaceholderMixin<Select<T>>, SizeMixin<Select<T>> {
 
     public Select() {
     }
