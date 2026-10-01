@@ -1,6 +1,7 @@
 package org.tbee.webstack.vdn.component.mixin;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.shared.Tooltip;
 
 public interface ComponentMixin<C extends Component> {
     default C id(String v) {
@@ -27,5 +28,10 @@ public interface ComponentMixin<C extends Component> {
 
     default C ariaLabel(String value) {
         return (C)this.attribute("aria-label", value);
+    }
+
+    default C tooltip(String value) {
+        Tooltip.forComponent((C)this).withText(value);
+        return ((C)this);
     }
 }
