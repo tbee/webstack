@@ -21,20 +21,20 @@ public interface SizeMixin<C extends HasSize> {
         ((C)this).setWidth(width, unit);
         return (C)this;
     }
-    default C maxWidth(String height) {
-        ((C)this).setMaxWidth(height);
+    default C maxWidth(String width) {
+        ((C)this).setMaxWidth(width);
         return (C)this;
     }
-    default C maxWidth(float height, Unit unit) {
-        ((C)this).setMaxWidth(height, unit);
+    default C maxWidth(float width, Unit unit) {
+        ((C)this).setMaxWidth(width, unit);
         return (C)this;
     }
-    default C minWidth(String height) {
-        ((C)this).setMinWidth(height);
+    default C minWidth(String width) {
+        ((C)this).setMinWidth(width);
         return (C)this;
     }
-    default C minWidth(float height, Unit unit) {
-        ((C)this).setMinWidth(height, unit);
+    default C minWidth(float width, Unit unit) {
+        ((C)this).setMinWidth(width, unit);
         return (C)this;
     }
 
