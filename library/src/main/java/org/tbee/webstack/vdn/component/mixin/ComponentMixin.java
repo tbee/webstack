@@ -34,4 +34,14 @@ public interface ComponentMixin<C extends Component> {
         Tooltip.forComponent((C)this).withText(value);
         return ((C)this);
     }
+
+    default C debug() {
+        return debug("red");
+    }
+
+    default C debug(String color) {
+        C c = (C)this;
+        c.getStyle().set("border", color + " 1px dashed");
+        return c;
+    }
 }
