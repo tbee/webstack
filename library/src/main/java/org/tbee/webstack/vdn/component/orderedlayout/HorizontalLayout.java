@@ -1,5 +1,6 @@
 package org.tbee.webstack.vdn.component.orderedlayout;
 
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
@@ -7,6 +8,8 @@ import org.tbee.webstack.vdn.component.mixin.FlexMixin;
 import org.tbee.webstack.vdn.component.mixin.SizeMixin;
 import org.tbee.webstack.vdn.component.mixin.StyleMixin;
 import org.tbee.webstack.vdn.component.mixin.ThemableLayoutMixin;
+
+import java.util.function.Consumer;
 
 public class HorizontalLayout extends com.vaadin.flow.component.orderedlayout.HorizontalLayout
 implements ComponentMixin<HorizontalLayout>, SizeMixin<HorizontalLayout>, StyleMixin<HorizontalLayout>, ThemableLayoutMixin<HorizontalLayout>, FlexMixin<HorizontalLayout> {
@@ -34,5 +37,10 @@ implements ComponentMixin<HorizontalLayout>, SizeMixin<HorizontalLayout>, StyleM
     /// The items are placed vertically centered, so a horizontal line runs through their centers.
     public HorizontalLayout centered() {
         return alignItems(FlexComponent.Alignment.CENTER); // vertically centered
+    }
+
+    public HorizontalLayout onClick(Consumer<ClickEvent<com.vaadin.flow.component.orderedlayout.HorizontalLayout>> listener) {
+        addClickListener(listener::accept);
+        return this;
     }
 }
