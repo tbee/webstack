@@ -1,6 +1,7 @@
 package org.tbee.webstack.vdn.component.mixin;
 
 import com.vaadin.flow.component.HasSize;
+import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.Unit;
 
 public interface SizeMixin<C extends HasSize> {
@@ -70,6 +71,14 @@ public interface SizeMixin<C extends HasSize> {
     default C size(float width, float height, Unit unit) {
         ((C)this).setWidth(width, unit);
         ((C)this).setHeight(height, unit);
+        return (C)this;
+    }
+
+    /// Include the padding and border in the width and height (CSS box-sizing: border-box).
+    /// Without this the sizes above apply to the content box only, so e.g. a 100% height
+    /// plus padding overflows its container and can cause scrollbars.
+    default C sizeIncludesPadding() {
+        ((HasStyle)this).getStyle().set("box-sizing", "border-box");
         return (C)this;
     }
 }
