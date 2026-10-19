@@ -20,9 +20,4 @@ implements ComponentMixin<Paragraph>, SizeMixin<Paragraph>, StyleMixin<Paragraph
     public Paragraph(String text) {
         super(text);
     }
-
-    public Paragraph onClick(ComponentEventListener<ClickEvent<Paragraph>> listener) {
-        super.addClickListener((ComponentEventListener<ClickEvent<com.vaadin.flow.component.html.Paragraph>>) event -> listener.onComponentEvent(VaadinUtil.clone(event)));
-        return this;
-    }
 }

@@ -21,9 +21,4 @@ implements ComponentMixin<Div>, SizeMixin<Div>, StyleMixin<Div>, TextMixin<Div> 
     public Div(String text) {
         super(text);
     }
-
-    public Div onClick(ComponentEventListener<ClickEvent<Div>> listener) {
-        super.addClickListener((ComponentEventListener<ClickEvent<com.vaadin.flow.component.html.Div>>) event -> listener.onComponentEvent(VaadinUtil.clone(event)));
-        return this;
-    }
 }

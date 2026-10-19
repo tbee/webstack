@@ -16,18 +16,37 @@ public interface StyleMixin<C extends HasStyle> {
     // COMMON USAGES
 
     default C fontSize(String v) {
-        style("font-size", v);
-        return (C)this;
+        return style("font-size", v);
     }
 
     default C opacity(double v) {
-        style("opacity", ""  + v);
-        return (C)this;
+        return style("opacity", ""  + v);
     }
 
     default C backgroundColor(String v) {
-        style("background-color", v);
-        return (C)this;
+        return style("background-color", v);
     }
 
+    default C cursor(String b) {
+        return style("cursor", b);
+    }
+    default C cursorPointer() {
+        return cursor("pointer");
+    }
+
+    default C margin(String v) {
+        return style("margin", v);
+    }
+    default C marginLeft(String v) {
+        return style("margin-left", v);
+    }
+    default C marginTop(String v) {
+        return style("margin-top", v);
+    }
+    default C marginRight(String v) {
+        return style("margin-right", v);
+    }
+    default C marginBottom(String v) {
+        return style("margin-bottom", v);
+    }
 }

@@ -21,9 +21,4 @@ implements ComponentMixin<Span>, SizeMixin<Span>, StyleMixin<Span> {
     public Span(String text) {
         super(text);
     }
-
-    public Span onClick(ComponentEventListener<ClickEvent<Span>> listener) {
-        super.addClickListener((ComponentEventListener<ClickEvent<com.vaadin.flow.component.html.Span>>) event -> listener.onComponentEvent(VaadinUtil.clone(event)));
-        return this;
-    }
 }

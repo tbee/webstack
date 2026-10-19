@@ -96,11 +96,6 @@ public class Grid<T> extends com.vaadin.flow.component.grid.Grid<T> {
         return this;
     }
 
-    public Grid<T> onClick(Consumer<T> listener) {
-        addItemClickListener(event -> listener.accept(event.getItem()));
-        return this;
-    }
-
     @Override
     public Column<T> addColumn(ValueProvider<T, ?> valueProvider) {
         Column<T> column = super.addColumn(valueProvider);
