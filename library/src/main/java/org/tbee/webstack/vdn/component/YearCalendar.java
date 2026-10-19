@@ -53,22 +53,22 @@ public class YearCalendar extends Div {
         return this;
     }
 
-    public YearCalendar onClick(Consumer<LocalDate> onClick) {
-        yearMonthRangeCalendar.onClick(onClick);
+    public YearCalendar onSelect(Consumer<LocalDate> v) {
+        yearMonthRangeCalendar.onSelect(v);
         return this;
     }
 
-    /// Onclick automatically refreshes the date that was clicked.
-    /// If another date also needs refreshing, this onclick can be used.
+    /// OnSelect automatically refreshes the date that was clicked.
+    /// If another date also needs refreshing, this onSelect can be used.
     ///
     /// Use as:
     /// ```java
-    ///     .onClick((localDate, refresh) -> {
+    ///     .onSelect((localDate, refresh) -> {
     ///         refresh.accept(someOtherLocalDate);
     ///     }
     /// ```
-    public YearCalendar onClick(BiConsumer<LocalDate, Consumer<LocalDate>> onClick) {
-        yearMonthRangeCalendar.onClick(onClick);
+    public YearCalendar onSelect(BiConsumer<LocalDate, Consumer<LocalDate>> v) {
+        yearMonthRangeCalendar.onSelect(v);
         return this;
     }
 

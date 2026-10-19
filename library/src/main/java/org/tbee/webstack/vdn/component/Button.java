@@ -41,11 +41,6 @@ implements ComponentMixin<Button>, TextMixin<Button>, SizeMixin<Button>, ThemeVa
         super(text, icon, clickListener);
     }
 
-    public Button onClick(Consumer<ClickEvent<com.vaadin.flow.component.button.Button>> listener) {
-        addClickListener(listener::accept);
-        return this;
-    }
-
     public Button isPrimary(boolean isPrimary) {
         if (isPrimary) {
             addThemeVariants(ButtonVariant.LUMO_PRIMARY);

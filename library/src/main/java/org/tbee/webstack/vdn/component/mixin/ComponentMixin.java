@@ -1,7 +1,15 @@
 package org.tbee.webstack.vdn.component.mixin;
 
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.shared.Tooltip;
+import org.tbee.webstack.vdn.VaadinUtil;
+import org.tbee.webstack.vdn.component.html.Div;
+import org.tbee.webstack.vdn.component.orderedlayout.HorizontalLayout;
+
+import java.util.function.Consumer;
 
 public interface ComponentMixin<C extends Component> {
     default C id(String v) {
@@ -32,6 +40,11 @@ public interface ComponentMixin<C extends Component> {
 
     default C tooltip(String value) {
         Tooltip.forComponent((C)this).withText(value);
+        return ((C)this);
+    }
+
+    default C onClick(Consumer<ClickEvent<C>> listener) {
+        ((ClickNotifier<C>)this).addClickListener(listener::accept);
         return ((C)this);
     }
 

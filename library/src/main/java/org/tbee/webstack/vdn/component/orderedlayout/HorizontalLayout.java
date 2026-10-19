@@ -38,9 +38,4 @@ implements ComponentMixin<HorizontalLayout>, SizeMixin<HorizontalLayout>, StyleM
     public HorizontalLayout centered() {
         return alignItems(FlexComponent.Alignment.CENTER); // vertically centered
     }
-
-    public HorizontalLayout onClick(Consumer<ClickEvent<com.vaadin.flow.component.orderedlayout.HorizontalLayout>> listener) {
-        addClickListener(listener::accept);
-        return this;
-    }
 }

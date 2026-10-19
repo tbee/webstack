@@ -81,22 +81,22 @@ implements ComponentMixin<YearMonthRangeCalendar>, SizeMixin<YearMonthRangeCalen
         return this;
     }
 
-    public YearMonthRangeCalendar onClick(Consumer<LocalDate> onClick) {
-        Arrays.stream(yearMonthCalendars).forEach(ymc -> ymc.onClick(onClick));
+    public YearMonthRangeCalendar onSelect(Consumer<LocalDate> v) {
+        Arrays.stream(yearMonthCalendars).forEach(ymc -> ymc.onSelect(v));
         return this;
     }
 
-    /// Onclick automatically refreshes the date that was clicked.
-    /// If another date also needs refreshing, this onclick can be used.
+    /// OnSelect automatically refreshes the date that was clicked.
+    /// If another date also needs refreshing, this onSelect can be used.
     ///
     /// Use as:
     /// ```java
-    ///     .onClick((localDate, refresh) -> {
+    ///     .onSelect((localDate, refresh) -> {
     ///         refresh.accept(someOtherLocalDate);
     ///     }
     /// ```
-    public YearMonthRangeCalendar onClick(BiConsumer<LocalDate, Consumer<LocalDate>> onClick) {
-        Arrays.stream(yearMonthCalendars).forEach(ymc -> ymc.onClick(ld -> onClick.accept(ld, this::refresh)));
+    public YearMonthRangeCalendar onSelect(BiConsumer<LocalDate, Consumer<LocalDate>> v) {
+        Arrays.stream(yearMonthCalendars).forEach(ymc -> ymc.onSelect(ld -> v.accept(ld, this::refresh)));
         return this;
     }
 

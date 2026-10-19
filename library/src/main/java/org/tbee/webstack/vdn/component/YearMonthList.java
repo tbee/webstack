@@ -67,8 +67,8 @@ public class YearMonthList extends Div {
     private BiConsumer<LocalDate, Set<String>> determineClassnamesBiConsumer = (localdate, classnames) -> {};
     private BiConsumer<LocalDate, Map<String, String>> determineStylesBiConsumer = (localdate, styles) -> {};
 
-    private Consumer<LocalDate> onClickConsumer = ld -> {};
-    private BiConsumer<LocalDate, Consumer<LocalDate>> onClickBiConsumer = (ld, consumer) -> {};
+    private Consumer<LocalDate> onSelectConsumer = ld -> {};
+    private BiConsumer<LocalDate, Consumer<LocalDate>> onSelectBiConsumer = (ld, consumer) -> {};
 
     private List<String> weekdayShortNames;
     private DayOfWeek firstDayOfWeek;
@@ -99,8 +99,8 @@ public class YearMonthList extends Div {
                                 .firstDayOfWeek(firstDayOfWeek)
                                 .determineClassnames(determineClassnamesBiConsumer)
                                 .determineStyles(determineStylesBiConsumer)
-                                .onClick(onClickConsumer)
-                                .onClick(onClickBiConsumer);
+                                .onSelect(onSelectConsumer)
+                                .onSelect(onSelectBiConsumer);
                         yearMonthCalendar.classNames(CSSPREFIX + "-calendar");
                         calendarPool.add(yearMonthCalendar);
                     }
@@ -158,24 +158,24 @@ public class YearMonthList extends Div {
         return this;
     }
 
-    public YearMonthList onClick(Consumer<LocalDate> onClick) {
-        this.onClickConsumer = onClick;
-        calendarPool.forEach(ymc -> ymc.onClick(onClick));
+    public YearMonthList onSelect(Consumer<LocalDate> v) {
+        this.onSelectConsumer = v;
+        calendarPool.forEach(ymc -> ymc.onSelect(v));
         return this;
     }
 
-    /// Onclick automatically refreshes the date that was clicked.
-    /// If another date also needs refreshing, this onclick can be used.
+    /// OnSelect automatically refreshes the date that was clicked.
+    /// If another date also needs refreshing, this onSelect can be used.
     ///
     /// Use as:
     /// ```java
-    ///     .onClick((localDate, refresh) -> {
+    ///     .onSelect((localDate, refresh) -> {
     ///         refresh.accept(someOtherLocalDate);
     ///     }
     /// ```
-    public YearMonthList onClick(BiConsumer<LocalDate, Consumer<LocalDate>> onClick) {
-        this.onClickBiConsumer = onClick;
-        calendarPool.forEach(ymc -> ymc.onClick(onClick));
+    public YearMonthList onSelect(BiConsumer<LocalDate, Consumer<LocalDate>> v) {
+        this.onSelectBiConsumer = v;
+        calendarPool.forEach(ymc -> ymc.onSelect(v));
         return this;
     }
 

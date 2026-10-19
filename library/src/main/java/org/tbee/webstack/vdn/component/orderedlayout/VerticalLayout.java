@@ -38,9 +38,4 @@ implements ComponentMixin<VerticalLayout>, SizeMixin<VerticalLayout>, StyleMixin
     public VerticalLayout centered() {
         return alignItems(FlexComponent.Alignment.CENTER); // vertically centered
     }
-
-    public VerticalLayout onClick(Consumer<ClickEvent<com.vaadin.flow.component.orderedlayout.VerticalLayout>> listener) {
-        addClickListener(listener::accept);
-        return this;
-    }
 }

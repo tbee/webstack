@@ -64,9 +64,4 @@ implements ComponentMixin<Image>, SizeMixin<Image>, StyleMixin<Image> {
         return this;
     }
     public enum Fit { CONTAIN, COVER, FILL, NONE, SCALE_DOWN }
-
-    public Image onClick(Consumer<ClickEvent<com.vaadin.flow.component.html.Image>> listener) {
-        addClickListener(listener::accept);
-        return this;
-    }
 }

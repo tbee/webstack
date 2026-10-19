@@ -5,6 +5,7 @@ import com.vaadin.flow.component.html.Div;
 import org.tbee.webstack.vdn.component.mixin.ComponentMixin;
 import org.tbee.webstack.vdn.component.mixin.SizeMixin;
 import org.tbee.webstack.vdn.component.mixin.StyleMixin;
+import org.tbee.webstack.vdn.component.mixin.TextMixin;
 import org.tbee.webstack.vdn.tag.table.Table;
 import org.tbee.webstack.vdn.tag.table.TableDataCell;
 import org.tbee.webstack.vdn.tag.table.TableRow;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 
 @StyleSheet("context://org/tbee/webstack/vdn/component/year-month-calendar.css")
 public class YearMonthCalendar extends Div
-implements ComponentMixin<YearMonthCalendar>, SizeMixin<YearMonthCalendar>, StyleMixin<YearMonthCalendar> {
+implements ComponentMixin<YearMonthCalendar>, SizeMixin<YearMonthCalendar>, StyleMixin<YearMonthCalendar>, TextMixin<YearMonthCalendar> {
     public static final String DATA_VALUE = "data-value";
     private final String CSSPREFIX = "year-month-calendar";
     private final String CSSHASDATE = CSSPREFIX + "-has-date";
@@ -45,7 +46,7 @@ implements ComponentMixin<YearMonthCalendar>, SizeMixin<YearMonthCalendar>, Styl
     private BiConsumer<LocalDate, Set<String>> determineClassnamesBiConsumer = (localdate, classnames) -> {};
     private BiConsumer<LocalDate, Map<String, String>> determineStylesBiConsumer = (localdate, styles) -> {};
 
-    private Consumer<LocalDate> onClickConsumer = ld -> {};
+    private Consumer<LocalDate> onSelectConsumer = ld -> {};
     private BiConsumer<LocalDate, Consumer<LocalDate>> onClickBiConsumer = (ld, consumer) -> {};
 
     private final List<String> DEFAULTCLASSNAMES = List.of(CSSPREFIX + "-cell", CSSPREFIX + "-date-cell");
@@ -79,7 +80,7 @@ implements ComponentMixin<YearMonthCalendar>, SizeMixin<YearMonthCalendar>, Styl
                         return;
                     }
                     LocalDate localDate = LocalDate.parse(dataValue);
-                    onClickConsumer.accept(localDate);
+                    onSelectConsumer.accept(localDate);
                     onClickBiConsumer.accept(localDate, this::refresh);
                     refresh(cell, localDate);
                 });
@@ -107,8 +108,8 @@ implements ComponentMixin<YearMonthCalendar>, SizeMixin<YearMonthCalendar>, Styl
         return this;
     }
 
-    public YearMonthCalendar onClick(Consumer<LocalDate> onClick) {
-        this.onClickConsumer = onClick;
+    public YearMonthCalendar onSelect(Consumer<LocalDate> v) {
+        this.onSelectConsumer = v;
         return this;
     }
 
@@ -117,12 +118,12 @@ implements ComponentMixin<YearMonthCalendar>, SizeMixin<YearMonthCalendar>, Styl
     ///
     /// Use as:
     /// ```java
-    ///     .onClick((localDate, refresh) -> {
+    ///     .onSelect((localDate, refresh) -> {
     ///         refresh.accept(someOtherLocalDate);
     ///     }
     /// ```
-    public YearMonthCalendar onClick(BiConsumer<LocalDate, Consumer<LocalDate>> onClick) {
-        this.onClickBiConsumer = onClick;
+    public YearMonthCalendar onSelect(BiConsumer<LocalDate, Consumer<LocalDate>> v) {
+        this.onClickBiConsumer = v;
         return this;
     }
 
