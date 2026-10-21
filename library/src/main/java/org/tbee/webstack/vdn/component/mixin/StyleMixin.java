@@ -23,6 +23,9 @@ public interface StyleMixin<C extends HasStyle> {
         return style("opacity", ""  + v);
     }
 
+    default C color(String v) {
+        return style("color", v);
+    }
     default C backgroundColor(String v) {
         return style("background-color", v);
     }
