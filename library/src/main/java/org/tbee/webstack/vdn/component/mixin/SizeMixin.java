@@ -69,9 +69,30 @@ public interface SizeMixin<C extends HasSize> {
     }
 
     default C size(float width, float height, Unit unit) {
-        ((C)this).setWidth(width, unit);
-        ((C)this).setHeight(height, unit);
-        return (C)this;
+        width(width, unit);
+        return height(height, unit);
+    }
+
+    default C minSize(float width, float height, Unit unit) {
+        minWidth(width, unit);
+        return minHeight(height, unit);
+    }
+
+    default C maxSize(float width, float height, Unit unit) {
+        maxWidth(width, unit);
+        return maxHeight(height, unit);
+    }
+
+    default C size(float widthAndHeight, Unit unit) {
+        return size(widthAndHeight, widthAndHeight, unit);
+    }
+
+    default C minSize(float widthAndHeight, Unit unit) {
+        return minSize(widthAndHeight, widthAndHeight, unit);
+    }
+
+    default C maxSize(float widthAndHeight, Unit unit) {
+        return maxSize(widthAndHeight, widthAndHeight, unit);
     }
 
     /// Include the padding and border in the width and height (CSS box-sizing: border-box).
