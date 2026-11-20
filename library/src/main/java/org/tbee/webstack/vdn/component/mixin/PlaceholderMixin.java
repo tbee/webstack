@@ -1,6 +1,5 @@
 package org.tbee.webstack.vdn.component.mixin;
 
-import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.HasPlaceholder;
 
 public interface PlaceholderMixin<C extends HasPlaceholder> {

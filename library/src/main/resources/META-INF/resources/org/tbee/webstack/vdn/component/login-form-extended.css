@@ -1,0 +1,26 @@
+/* The login page: the illustration and the title above the LoginForm (see LoginFormExtended).
+   The illustration is the whole width of the panel above the form, keeping its aspect ratio,
+   and the panel itself has no background of its own: it sits on whatever the form sits on, so
+   the two read as one surface in every theme.
+
+   The title sits directly on any background image, and keeps its theme colour; the outline is
+   drawn in the page's own background colour (light on light, dark on dark) so it stays readable
+   on any spot of the image. That colour is the theme's own background token, so this stylesheet
+   carries no colour of its own. */
+
+.loginLogo {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.loginLogoPanel {
+    padding: 1.5rem;
+}
+
+.loginTitle {
+    -webkit-text-stroke: 1px var(--vaadin-background-color, var(--lumo-base-color));
+    paint-order: stroke fill;
+    text-shadow: 0 0 1px var(--vaadin-background-color, var(--lumo-base-color)),
+                 0 0 2px var(--vaadin-background-color, var(--lumo-base-color));
+}

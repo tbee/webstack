@@ -1,0 +1,44 @@
+/* The start/end labels of the LabeledIntegerRangeSlider are drawn above the track.
+   The slider's own value bubble (the label above a thumb) would duplicate them,
+   so it is hidden permanently, also while hovering, focusing or dragging.
+
+   The bubbles are light-DOM children of <vaadin-range-slider> that are projected
+   into its "bubble" slot, so they can be hidden from document-scope CSS.
+   The class comes from the Java component, so the rule only affects this slider. */
+vaadin-range-slider.hideValueBubble > vaadin-slider-bubble {
+    display: none;
+}
+
+/* A range slider is a field, so the theme draws its label and a form layout aligns it like any other field.
+   Only the structure of what is inside is set here; the values are the theme's own. */
+
+/* A little air between the field label and the start/end bubbles, which would otherwise touch it. In em, so it
+   follows the font size of whatever theme is in use, and the same room taken back under the bubbles, so the
+   track sits where the track of the other fields does. */
+.labeledIntegerRangeSliderStartEnd {
+    margin-top: 0.25em;
+    margin-bottom: -5px;
+}
+
+/* The slider pads its controls like a field's input box, and that element is not exposed as a part, so the bottom
+   padding cannot be switched off directly. It shows up as extra air under the track, which makes the gap under a
+   slider larger than under a text field; the negative margin takes exactly that back. */
+vaadin-range-slider.labeledIntegerRangeSliderSlider {
+    margin-bottom: calc(-2 * var(--vaadin-padding-block-container));
+}
+
+/* Mimics the slider's value bubble (the label above a thumb), but without the arrow. Used for the start/end
+   labels of a range slider: the same tokens the theme builds its own bubble from, with the Lumo values as a
+   fallback for a theme that has no tooltip tokens. */
+.sliderValueBubble {
+    display: inline-block;
+    padding: var(--vaadin-tooltip-padding, var(--lumo-space-xs) var(--lumo-space-s));
+    border-radius: var(--vaadin-tooltip-border-radius, var(--lumo-border-radius-m));
+    background: var(--vaadin-tooltip-background, var(--vaadin-overlay-background, var(--aura-surface-color, var(--lumo-base-color))));
+    color: var(--vaadin-tooltip-text-color, var(--vaadin-text-color));
+    font-size: var(--vaadin-tooltip-font-size, var(--lumo-font-size-xs));
+    font-weight: var(--vaadin-tooltip-font-weight);
+    line-height: var(--vaadin-tooltip-line-height, var(--lumo-line-height-s));
+    box-shadow: var(--aura-overlay-outline-shadow, 0 0 0 0 transparent), var(--vaadin-tooltip-shadow, var(--aura-shadow-s, var(--lumo-box-shadow-xs)));
+    white-space: nowrap;
+}

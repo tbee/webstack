@@ -24,5 +24,13 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- The Playwright helpers in this module are for the using project's tests, so Playwright itself is
+		     provided (optional) and the application brings it in test scope. -->
+		<dependency>
+			<groupId>com.microsoft.playwright</groupId>
+			<artifactId>playwright</artifactId>
+			<version>${playwright.version}</version>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 </project>

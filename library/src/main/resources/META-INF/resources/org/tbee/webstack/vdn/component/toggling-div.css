@@ -1,0 +1,24 @@
+/* A TogglingDiv places its children next to each other while it is wide enough, and stacks
+   them on top of each other once it becomes narrower than the width its Java component was
+   given (see TogglingDiv). That switch is a @container query over the div's own width, and
+   because the width is chosen per instance the component injects that query itself; what
+   every instance has in common is here.
+
+   The class comes from the Java component, so these rules only affect TogglingDivs. */
+.togglingDiv {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 1rem;
+    /* the injected query measures this element's own width */
+    container-type: inline-size;
+}
+
+/* side by side, the children get equal shares of the width, and they may shrink below their
+   content so a long text wraps instead of pushing its neighbour out of the div */
+.togglingDiv > * {
+    flex: 1 1 0;
+    min-width: 0;
+    box-sizing: border-box;
+}

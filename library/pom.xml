@@ -13,6 +13,51 @@
 	<name>webstack</name>
 	<description>Generic classes to support the Spring/Vaadin/Hsql stack</description>
 
+	<build>
+		<plugins>
+			<!--
+			     Generates org.tbee.webstack.BuildInfo from src/main/java-templates/org/tbee/webstack,
+			     with the build timestamp baked in as a constant. @StyleSheet needs a compile-time constant,
+			     so the cachebuster for the library's stylesheets cannot be read at runtime; it is generated
+			     here instead, so a fresh build always produces a new cachebuster and it never has to be
+			     bumped by hand. build-helper:timestamp-property (bound to validate) supplies ${buildTimestamp}.
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.6.1</version>
+				<executions>
+					<execution>
+						<id>build-timestamp</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>timestamp-property</goal>
+						</goals>
+						<configuration>
+							<name>buildTimestamp</name>
+							<timeSource>build</timeSource>
+							<pattern>yyyyMMddHHmmss</pattern>
+							<timeZone>Europe/Amsterdam</timeZone>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>generate-build-info</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

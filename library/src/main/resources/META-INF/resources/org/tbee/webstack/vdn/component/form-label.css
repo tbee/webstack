@@ -1,0 +1,15 @@
+/* The FormLabel mimics a FormLayout label. A real form item draws its label inside
+   its shadow DOM, so that one cannot be reused; the class comes from the Java
+   component, so the rule only affects labels of this type.
+
+   The themes differ in the values, not in the rule: Lumo's form label is one step
+   smaller than the body text and is drawn in the secondary text colour, while Aura's
+   keeps the body size and uses the primary text colour. The application therefore
+   fills --form-label-font-size and --form-label-color from its theme stylesheets,
+   which keeps this rule the same for every theme. */
+.form-item-label {
+    font-size: var(--form-label-font-size, inherit);
+    font-weight: 500; /* medium in both themes */
+    color: var(--form-label-color, var(--vaadin-text-color));
+    margin-bottom: var(--vaadin-padding-xs);
+}

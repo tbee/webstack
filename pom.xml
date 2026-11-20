@@ -51,6 +51,7 @@
 		<postgresql.version>42.7.7</postgresql.version>
 		<junit.version>5.9.2</junit.version>
 		<jdbi.version>3.47.0</jdbi.version>
+		<playwright.version>1.51.0</playwright.version>
 	</properties>
 
 	<dependencyManagement>
