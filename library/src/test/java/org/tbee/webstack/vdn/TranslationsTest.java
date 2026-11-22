@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Locale;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,7 +36,7 @@ class TranslationsTest {
         }
     };
 
-    private final Translations translations = new Translations(i18nProvider);
+    private final Translations translations = new Translations(Optional.of(i18nProvider));
 
     @Test
     void existingKeyReturnsItsTranslation() {
@@ -62,5 +63,13 @@ class TranslationsTest {
         assertTrue(translations.has("present", Locale.ENGLISH));
         assertTrue(translations.has("blank", Locale.ENGLISH));
         assertFalse(translations.has("missing", Locale.ENGLISH));
+    }
+
+    @Test
+    void withoutProviderEveryKeyIsMissing() {
+        Translations withoutProvider = new Translations(Optional.empty());
+
+        assertFalse(withoutProvider.has("present", Locale.ENGLISH));
+        assertEquals("fallback", withoutProvider.translateOr("present", Locale.ENGLISH, "fallback"));
     }
 }

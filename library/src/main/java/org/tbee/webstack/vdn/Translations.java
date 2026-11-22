@@ -5,6 +5,7 @@ import com.vaadin.flow.i18n.I18NProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Looks up translations, with the option to fall back to a default when a key is not defined.
@@ -16,19 +17,24 @@ import java.util.Locale;
  * Note that a key that is present with an empty value counts as existing, so it does <em>not</em>
  * fall back to the default; only a missing key does.
  * <p>
+ * The {@link I18NProvider} is optional: an application that does not define one simply has no
+ * translations, so every key is considered missing and the fallback is returned.
+ * <p>
  */
 @Component
 public class Translations {
 
-    private final I18NProvider i18nProvider;
+    private final Optional<I18NProvider> i18nProvider;
 
-    public Translations(I18NProvider i18nProvider) {
+    public Translations(Optional<I18NProvider> i18nProvider) {
         this.i18nProvider = i18nProvider;
     }
 
     /** @return whether the key is defined in the bundle of the given locale */
     public boolean has(String key, Locale locale) {
-        return i18nProvider.getAllTranslations(locale).containsKey(key);
+        return i18nProvider
+                .map(provider -> provider.getAllTranslations(locale).containsKey(key))
+                .orElse(false);
     }
 
     /** @return the translation of the key in the current UI locale, or {@code fallback} when the key is not defined */
@@ -38,10 +44,10 @@ public class Translations {
 
     /** @return the translation of the key in the given locale, or {@code fallback} when the key is not defined */
     public String translateOr(String key, Locale locale, String fallback, Object... params) {
-        if (!has(key, locale)) {
-            return fallback;
-        }
-        return i18nProvider.getTranslation(key, locale, params);
+        return i18nProvider
+                .filter(provider -> provider.getAllTranslations(locale).containsKey(key))
+                .map(provider -> provider.getTranslation(key, locale, params))
+                .orElse(fallback);
     }
 
     private Locale currentLocale() {
