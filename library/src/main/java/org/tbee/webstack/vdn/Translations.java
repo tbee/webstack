@@ -2,6 +2,8 @@ package org.tbee.webstack.vdn;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.i18n.I18NProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
@@ -26,8 +28,17 @@ public class Translations {
 
     private final Optional<I18NProvider> i18nProvider;
 
+    @Autowired
     public Translations(Optional<I18NProvider> i18nProvider) {
         this.i18nProvider = i18nProvider;
+    }
+
+    /**
+     * The same for code that holds an {@link I18NProvider} itself, so a caller does not have to wrap it; a
+     * {@code null} provider means the same as an application that defines none.
+     */
+    public Translations(@Nullable I18NProvider i18nProvider) {
+        this(Optional.ofNullable(i18nProvider));
     }
 
     /** @return whether the key is defined in the bundle of the given locale */

@@ -72,4 +72,21 @@ class TranslationsTest {
         assertFalse(withoutProvider.has("present", Locale.ENGLISH));
         assertEquals("fallback", withoutProvider.translateOr("present", Locale.ENGLISH, "fallback"));
     }
+
+    /** A caller that holds a provider passes it as it is, without wrapping it in an Optional. */
+    @Test
+    void aProviderCanBePassedWithoutWrappingIt() {
+        Translations withProvider = new Translations(i18nProvider);
+
+        assertTrue(withProvider.has("present", Locale.ENGLISH));
+        assertEquals("present[]@en", withProvider.translateOr("present", Locale.ENGLISH, "fallback"));
+    }
+
+    @Test
+    void aNullProviderMeansNoTranslations() {
+        Translations withoutProvider = new Translations((I18NProvider) null);
+
+        assertFalse(withoutProvider.has("present", Locale.ENGLISH));
+        assertEquals("fallback", withoutProvider.translateOr("present", Locale.ENGLISH, "fallback"));
+    }
 }
