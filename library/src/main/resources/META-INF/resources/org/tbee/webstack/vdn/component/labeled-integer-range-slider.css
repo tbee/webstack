@@ -1,4 +1,5 @@
-/* The start/end labels of the LabeledIntegerRangeSlider are drawn above the track.
+/* The start/end labels of the LabeledIntegerRangeSlider are drawn next to the track: both above it by default,
+   and with splitLabels(true) the start above and the end below.
    The slider's own value bubble (the label above a thumb) would duplicate them,
    so it is hidden permanently, also while hovering, focusing or dragging.
 
@@ -18,6 +19,27 @@ vaadin-range-slider.hideValueBubble > vaadin-slider-bubble {
 .labeledIntegerRangeSliderStartEnd {
     margin-top: 0.25em;
     margin-bottom: -5px;
+}
+
+/* splitLabels(true): the start value sits above the track and the end value below it, each on its own row. The
+   field's vertical layout stretches its children, so the bubbles get an explicit alignment and keep hugging their
+   text: the start at the left, the end at the right, mirroring the ends of the range.
+   The slider's negative bottom margin (see below) exists only to remove the air under the track; in this layout the
+   end label sits there instead, so it is undone. Both bubbles then eat the same 5px into the slider's padding, which
+   leaves each of them exactly the same distance to the track. */
+.labeledIntegerRangeSliderSplitLabels > vaadin-range-slider.labeledIntegerRangeSliderSlider {
+    margin-bottom: 0;
+}
+
+.labeledIntegerRangeSliderSplitLabels > .labeledIntegerRangeSliderStartLabel {
+    align-self: flex-start;
+    margin-top: 0.25em;
+    margin-bottom: -5px;
+}
+
+.labeledIntegerRangeSliderSplitLabels > .labeledIntegerRangeSliderEndLabel {
+    align-self: flex-end;
+    margin-top: -5px;
 }
 
 /* The slider pads its controls like a field's input box, and that element is not exposed as a part, so the bottom
