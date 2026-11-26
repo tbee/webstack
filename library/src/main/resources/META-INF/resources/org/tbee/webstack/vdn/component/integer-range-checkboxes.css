@@ -1,0 +1,18 @@
+/* The checkboxes of IntegerRangeCheckboxes are laid out in a plain flex container, so the field is as tall as its
+   content and the theme's label, validation state and error message are drawn as for any other field. */
+
+.integerRangeCheckboxes {
+    display: flex;
+    gap: var(--vaadin-gap-xs, 0.25em);
+}
+
+.integerRangeCheckboxesVertical {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.integerRangeCheckboxesHorizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
